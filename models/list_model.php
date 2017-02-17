@@ -11,7 +11,7 @@ class ListModel
 
     public function  all()
     {
-        $query = "SELECT models.brand, models.model FROM models;"; 
+        $query = "SELECT model_id, models.brand, models.model FROM models;"; 
 
         $result = mysqli_query($this->dbc, $query);
 
@@ -21,9 +21,11 @@ class ListModel
 
             while($row = mysqli_fetch_row($result))
             {
-                $data[] = $row;    
+                $data[$row[0]] = array($row[1], $row[2]);    
             }
         }
+        
+        $data = json_encode($data);
 
         return $data;
     }
@@ -37,10 +39,12 @@ class ListModel
 
         if($result)
         {
-            $row = mysqli_fetch_row($result);
+            $row = mysqli_fetch_assoc($result);
         }
 
-        return $row;
+        $data = json_encode($row);
+
+        return $data;
     }
          
 }

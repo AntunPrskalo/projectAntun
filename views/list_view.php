@@ -3,10 +3,13 @@
 class ListView
 {
     public $data;
+    public $dataJson;
 
     public function __construct($data)
     {
-        $this->data = $data;
+        $this->dataJson = $data;
+        $this->data = json_decode($data);
+        var_dump($this->dataJson);
     }
 
     public function generateView()
@@ -38,16 +41,7 @@ class ListView
         $arr = ['Proizvodjac:', 'Model:', 'Mjenjac:', 'Klima:', 'Broj sjedala:', 'Broj vrata:', 'Gorivo:'];
         $i = 0;
 
-        if($this->data[3] == 1)
-        {
-            $this->data[3] = "Da";
-        }
-        else 
-        {
-            $$this->data[3] = "Ne";
-        }
-
-        foreach($this->data as $value)
+        foreach($this->data as $key=>$value)
         {
             $view .= "<tr>";
             $view .= "<td>" . $arr[$i] . "</td>";
