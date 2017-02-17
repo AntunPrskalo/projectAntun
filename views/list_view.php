@@ -14,7 +14,7 @@ class ListView
 
     public function generateView()
     {
-        $view = "<table>";
+        $view = "<table cellpadding = '5'>";
 
         foreach($this->data as $value)
         {
@@ -26,7 +26,8 @@ class ListView
             }
             $model = $value[1];
 
-            $view .= "<td> <a href = /projectAntun/vozila/details/$model>more<a> </td>";
+            $view .= "<td> <a href = /projectAntun/vozila/info/$model>info<a> </td>";
+            $view .= "<td> <a href = /projectAntun/vozila/rezerviraj/$model>rezerviraj<a> </td>";
             $view .= "</tr>";
         }
 
@@ -37,7 +38,7 @@ class ListView
 
     public function generateInfoView()
     {
-        $view = "<table>";
+        $view = "<table cellpadding = '5'>";
         $arr = ['Proizvodjac:', 'Model:', 'Mjenjac:', 'Klima:', 'Broj sjedala:', 'Broj vrata:', 'Gorivo:'];
         $i = 0;
 

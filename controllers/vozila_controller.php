@@ -22,7 +22,7 @@ class VozilaController
         return $view;
     }
 
-    public function details($model)
+    public function info($model)
     {
         $dbc = DBConnection::getMysqli();
 
@@ -34,6 +34,17 @@ class VozilaController
         $view = $listView->generateInfoView();
 
         return $view;  
+    }
+
+    public function rezerviraj($model)
+    {
+        $dbc = DBConnection::getMysqli();
+
+        require('views/forms.php');
+        $form = new Form();
+        $view = $form->rezervirajForm($model); 
+
+        return $view;   
     }
 }
 
