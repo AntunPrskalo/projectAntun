@@ -23,7 +23,7 @@ class ListView
             }
             $model = $value[1];
 
-            $view .= "<td> <a href = /projectAntun/vozila/details/$model>more info<a> </td>";
+            $view .= "<td> <a href = /projectAntun/vozila/details/$model>more<a> </td>";
             $view .= "</tr>";
         }
 
@@ -35,7 +35,7 @@ class ListView
     public function generateInfoView()
     {
         $view = "<table>";
-        $arr = ['Proizvodjac:', 'Model:', 'Mjenjac:', 'Klima:', 'Broj sijedala:', 'Broj vrata:', 'Gorivo:'];
+        $arr = ['Proizvodjac:', 'Model:', 'Mjenjac:', 'Klima:', 'Broj sjedala:', 'Broj vrata:', 'Gorivo:'];
         $i = 0;
 
         if($this->data[3] == 1)

@@ -5,13 +5,11 @@ class VozilaController
     public function __construct()
     {
         require_once('models/list_model.php');
-        require_once('models/dbc_model.php');
-       
+        require_once('models/dbc_model.php');  
     }
 
     public function index()
     {
-
         $dbc = DbConnection::getMysqli();
 
         $listModel = new ListModel($dbc);
@@ -20,7 +18,7 @@ class VozilaController
         require('views/list_view.php');
         $listView = new ListView($data);
         $view = $listView->generateView();
-        
+ 
         return $view;
     }
 

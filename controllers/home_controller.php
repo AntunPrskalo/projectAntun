@@ -4,10 +4,10 @@ class HomeController
 {
     public function index()
     {
-        require_once('views/page_view.php');
+        require_once('views/main_view.php');
 
-        $pageView = new PageView();
-        $view = $pageView->homePageView();
+        $mainView = new MainView();
+        $view = $mainView->generateMainView();
 
         return $view;
     }

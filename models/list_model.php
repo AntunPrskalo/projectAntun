@@ -41,7 +41,8 @@ class ListModel
         }
 
         return $row;
-    }       
+    }
+         
 }
 
 ?>
