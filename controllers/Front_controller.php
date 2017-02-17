@@ -49,13 +49,14 @@ class FrontController
 
         if($url) 
         {
-            $this->paramters = array_values($url);
-        } 
+            $this->parameters = array_values($url);
+    
+        }
         else 
         {
             $this->parameters = array();
         }
-        
+
         $this->view = call_user_func_array([$this->controller, $this->method], $this->parameters);
     }
 

@@ -26,6 +26,21 @@ class ListModel
         }
 
         return $data;
+    }
+
+    public function details($model)
+    {
+        $query = "SELECT brand, model, transmission, air_conditioning, seats, doors, fuel 
+                  FROM models WHERE model = '$model';";
+
+        $result = mysqli_query($this->dbc, $query);
+
+        if($result)
+        {
+            $row = mysqli_fetch_row($result);
+        }
+
+        return $row;
     }       
 }
 
