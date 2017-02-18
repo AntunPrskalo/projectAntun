@@ -49,16 +49,35 @@ class VozilaController
 
     public function potvrdi()
     {
-        var_dump($_POST);
-        
-        $dbc = DBConnection::getMysqli();
+        if(isset($_POST['bookSubmit']))
+        {
+            require_once('models/order_model.php');
 
-        require_once('models/order_model.php');
-        $order = new Order($dbc);
-        $result = $order->book();
+            $dbc = DBConnection::getMysqli();
+            $order = new Order($dbc);
 
+            if(!$order->checkForm($_POST))
+            {
+                $result = $order->book();
 
+                if($result)
+                {
+                    require_once('views/message_view.php');
+                    $message = new Message();
+                    $view = $message->successfulReservationView();
 
+                    return $view;
+                }   
+                else
+                {
+                    echo "rezervacija neuspjesna"; //error controller
+                } 
+            }
+            else
+            {
+                echo "data missing"; // error controller
+            }
+        }
     }
 }
 

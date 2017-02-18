@@ -9,6 +9,13 @@ class Order
         $this->dbc = $dbc;
     }
 
+    public function checkForm($arr)
+    {
+        $bool = in_array("", $arr);
+
+        return $bool;       
+    }
+
     public function book()
     {
         $first_name = $_POST['first_name'];
@@ -44,7 +51,7 @@ class Order
         }
         else
         {
-            echo "Currently we have no $model models on this location"; // return error controller
+            // No avalible cars
         }
         
         $query2 = "INSERT INTO `customers`(`first_name`, `last_name`, `phone`, `email`) 
@@ -58,8 +65,8 @@ class Order
                    VALUES ('$customer_id', '$item_id', '$quantity', NOW(), NOW());";
 
         $result = mysqli_query($this->dbc, $query3);
-        var_dump($result);
         
+        return $result;
     }
 }
 
