@@ -71,6 +71,14 @@ class Form
                         <td><input type="time" name = 'dropoff_time' value = ""></td>
                     </tr>
                     <tr>
+                        <td><span>Način plaćanja:</span></td>
+                        <td>
+                            <select name = "payment_type_id">
+                                <option value="1">PayPal</option>
+                                <option value="2">Kreditna kartica</option>
+                            </select>
+                        </td>
+                    </tr>
                         <td> <input type = "submit" name = "bookSubmit" value = "POTVRDI"> </td>
                     </tr>
                 </table>
