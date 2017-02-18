@@ -46,6 +46,20 @@ class VozilaController
 
         return $view;   
     }
+
+    public function potvrdi()
+    {
+        var_dump($_POST);
+        
+        $dbc = DBConnection::getMysqli();
+
+        require_once('models/order_model.php');
+        $order = new Order($dbc);
+        $result = $order->book();
+
+
+
+    }
 }
 
 ?>
