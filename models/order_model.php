@@ -17,6 +17,53 @@ class Order
         return $bool;       
     }
 
+    public function avaliableCars($model, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
+    {
+        $avalibleCars1 = array();
+        $avalibleCars2 = array();
+
+        // Auta koja nisu rezervirana a nalaze se na traženoj lokaciji
+        $query1 = "SELECT cars.car_id FROM orders
+                   RIGHT OUTER JOIN cars
+                   ON orders.item_id = cars.car_id
+                   INNER JOIN models
+                   ON models.model_id = cars.model_id
+                   WHERE models.model = '$model' AND location_id = '$pickup_location_id' AND orders.order_id IS NULL;";
+
+        $result = mysqli_query($this->dbc, $query1);
+
+        if($result)
+        {
+            while($row = mysqli_fetch_row($result))
+            {
+                $avalibleCars1[] = $row[0];
+            }
+        }
+        var_dump($avalibleCars1); 
+
+        // Auta koja su rezervirana a biti će vraćena ta traženu lokaciju prije datuma preuzimanja nove rezervacije 
+        $query2 = "SELECT cars.car_id FROM orders
+                   INNER JOIN order_details
+                   ON orders.order_id = order_details.order_id
+                   INNER JOIN cars
+                   ON orders.item_id = cars.car_id
+                   INNER JOIN models
+                   ON models.model_id = cars.model_id
+                   WHERE models.model = '$model' AND ((order_details.dropoff_location_id = '$pickup_location_id' AND order_details.dropoff_date < '$pickup_date')
+                   OR (order_details.pickup_location_id = '$dropoff_location_id' AND order_details.pickup_date > '$dropoff_date'));";
+
+        $result = mysqli_query($this->dbc, $query2);
+
+        if($result)
+        {
+            while($row = mysqli_fetch_row($result))
+            {
+                $avalibleCars2[] = $row[0];
+            }
+        }
+        var_dump($avalibleCars2);               
+    }
+
     public function book()
     {
         $first_name = $_POST['first_name'];

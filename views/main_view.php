@@ -7,6 +7,9 @@ class MainView
         $view = <<<HTML
             <table>
                 <tr>
+                    <td> <a href = '/projectantun/rezerviraj'> REZERVIRAJ ODMAH <a> </td>
+                </tr>
+                <tr>
                     <td> <a href = '/projectantun/vozila'> VOZILA U PONUDI <a> </td>
                 </tr>
                 <tr>
