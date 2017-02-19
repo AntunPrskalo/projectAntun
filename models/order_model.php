@@ -19,10 +19,13 @@ class Order
 
     public function avaliableCars($model, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
-        $avalibleCars1 = array();
-        $avalibleCars2 = array();
+        $avaliableCars1 = array();
+        $avaliableCars2 = array();
 
-        // Auta koja nisu rezervirana a nalaze se na traženoj lokaciji
+        $avaliableCarsTemp = array();
+        $unavaliableCars = array();
+
+        // Auta koja NISU rezervirana a nalaze se na traženoj lokaciji
         $query1 = "SELECT cars.car_id FROM orders
                    RIGHT OUTER JOIN cars
                    ON orders.item_id = cars.car_id
@@ -30,19 +33,19 @@ class Order
                    ON models.model_id = cars.model_id
                    WHERE models.model = '$model' AND location_id = '$pickup_location_id' AND orders.order_id IS NULL;";
 
-        $result = mysqli_query($this->dbc, $query1);
+        $result1 = mysqli_query($this->dbc, $query1);
 
-        if($result)
+        if($result1)
         {
-            while($row = mysqli_fetch_row($result))
+            while($row = mysqli_fetch_row($result1))
             {
-                $avalibleCars1[] = $row[0];
+                $avaliableCars1[] = $row[0];
             }
         }
-        var_dump($avalibleCars1); 
+        var_dump($avaliableCars1); 
 
-        // Auta koja su rezervirana a biti će vraćena ta traženu lokaciju prije datuma preuzimanja nove rezervacije 
-        $query2 = "SELECT cars.car_id FROM orders
+        // Auta koja SU rezervirana ali se vremena rezervacije NE PREKLAPAJU
+        $query2 = "SELECT DISTINCT cars.car_id FROM orders
                    INNER JOIN order_details
                    ON orders.order_id = order_details.order_id
                    INNER JOIN cars
@@ -52,16 +55,41 @@ class Order
                    WHERE models.model = '$model' AND ((order_details.dropoff_location_id = '$pickup_location_id' AND order_details.dropoff_date < '$pickup_date')
                    OR (order_details.pickup_location_id = '$dropoff_location_id' AND order_details.pickup_date > '$dropoff_date'));";
 
-        $result = mysqli_query($this->dbc, $query2);
+        $result2 = mysqli_query($this->dbc, $query2);
 
-        if($result)
+        if($result2)
         {
-            while($row = mysqli_fetch_row($result))
+            while($row = mysqli_fetch_row($result2))
             {
-                $avalibleCars2[] = $row[0];
+                $avaliableCarsTemp[] = $row[0];
             }
         }
-        var_dump($avalibleCars2);               
+        var_dump($avaliableCarsTemp);
+
+        // Auta koja SU rezervirana ali se vremena rezervacije PREKLAPAJU
+        $query3 = "SELECT DISTINCT cars.car_id FROM orders
+                   INNER JOIN order_details
+                   ON orders.order_id = order_details.order_id
+                   INNER JOIN cars
+                   ON orders.item_id = cars.car_id
+                   INNER JOIN models
+                   ON models.model_id = cars.model_id
+                   WHERE models.model = '$model' AND !((order_details.dropoff_location_id = '$pickup_location_id' AND order_details.dropoff_date < '$pickup_date')
+                   OR (order_details.pickup_location_id = '$dropoff_location_id' AND order_details.pickup_date > '$dropoff_date'));";
+
+        $result3 = mysqli_query($this->dbc, $query3);
+
+        if($result3)
+        {
+            while($row = mysqli_fetch_row($result3))
+            {
+                $unavaliableCars[] = $row[0];
+            }
+        }
+        var_dump($unavaliableCars);
+
+        $avaliableCars2 = array_diff($avaliableCarsTemp, $unavaliableCars);
+        var_dump($avaliableCars2);
     }
 
     public function book()

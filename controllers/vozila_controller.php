@@ -89,7 +89,7 @@ class VozilaController
                 else
                 {
                     echo "rezervacija neuspjesna"; //error controller
-                }*/ 
+                }*/
             }
             else
             {
