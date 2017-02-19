@@ -42,7 +42,7 @@ class VozilaController
 
         require('views/forms.php');
         $form = new Form();
-        $view = $form->rezervirajForm($model); 
+        $view = $form->generateReservationFrom($model);  
 
         return $view;   
     }

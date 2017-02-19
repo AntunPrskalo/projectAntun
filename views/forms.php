@@ -2,14 +2,45 @@
 
 class Form
 {
-    public function rezervirajForm($model)
+    public function generateReservationFrom($model) 
+    {
+        $view = "<form action='/projectantun/vozila/potvrdi' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
+
+        $view .= "<tr> <th colspan = '2'>REZERVACIJSKA FORMA</th> </tr>"; // naslov
+
+        $view .= $this->personalInfoForm();
+        $view .= $this->reservationInfoForm();
+
+        $view .= "<tr> <td> <input type = 'submit' name = 'bookSubmit' value = 'POTVRDI REZERVACIJU'> </td> </tr>"; // submit button
+
+        $view .= "</table>"; // zatvori table
+
+        $view .= "<input type = 'hidden' name = 'model' value = $model>"; // hidden input
+
+        $view .= "</form>"; // zatvori form
+
+        return $view; 
+
+    }
+
+    public function generateSearchFrom() 
+    {
+        $view = "<form action='/projectantun/rezervacija/potvrdi' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
+
+        $view .= "<tr> <th colspan = '2'>PRETRAGA VOZILA</th> </tr>"; // naslov
+
+        $view .= $this->reservationInfoForm();
+
+        $view .= "<tr> <td> <input type = 'submit' name = 'searchSubmit' value = 'PRONADJI DOSTUPNA VOZILA'> </td> </tr>"; // submit button
+
+        $view .= "</table></form>"; // zatvori form, table
+
+        return $view; 
+
+    }
+    public function personalInfoForm()
     {
         $view = <<<HTML
-            <form action='/projectantun/vozila/potvrdi' method = "POST">
-                <table table cellpadding = '3'>
-                    <tr>
-                        <th colspan = "2">REZERVACIJSKA FORMA</th>
-                    </tr>
                     <tr>
                         <td><span>Ime:</span></td>
                         <td><input type="text" name = 'first_name' value = ""></td>
@@ -26,8 +57,23 @@ class Form
                         <td><span>Email adresa:</span></td>
                         <td><input type="text" name = 'email' value = ""></td>
                     </tr>
-                    <tr><td> &nbsp <td></tr>
+                    <tr>
+                        <td><span>Način plaćanja:</span></td>
+                        <td>
+                            <select name = "payment_type_id">
+                                <option value="1">PayPal</option>
+                                <option value="2">Kreditna kartica</option>
+                            </select>
+                        </td>
+                    </tr>
+HTML;
 
+        return $view;
+    }
+
+    public function reservationInfoForm()
+    {
+        $view = <<<HTML
                     <tr>
                         <td><span>Količina:</span></td>
                         <td><input type="text" name = 'quantity' value = "1"></td>
@@ -70,22 +116,8 @@ class Form
                         <td><span>Vrijeme povrata:</span></td>
                         <td><input type="time" name = 'dropoff_time' value = ""></td>
                     </tr>
-                    <tr>
-                        <td><span>Način plaćanja:</span></td>
-                        <td>
-                            <select name = "payment_type_id">
-                                <option value="1">PayPal</option>
-                                <option value="2">Kreditna kartica</option>
-                            </select>
-                        </td>
-                    </tr>
-                        <td> <input type = "submit" name = "bookSubmit" value = "POTVRDI"> </td>
-                    </tr>
-                </table>
 HTML;
-        $view .= "<input type = 'hidden' name = 'model' value = $model> </form>";
-
-        return $view;
+        return $view;       
     }
 }
 
