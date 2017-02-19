@@ -49,51 +49,60 @@ class VozilaController
 
     public function potvrdi()
     {
-
-
         if(isset($_POST['bookSubmit']))
         {
-            $first_name = $_POST['first_name'];
-            $last_name = $_POST['last_name'];
-            $phone = $_POST['phone'];
-            $email = $_POST['email'];
-            $quantity = $_POST['quantity'];
-            $pickup_location_id = $_POST['pickup_location_id'];
-            $pickup_date = $_POST['pickup_date'];
-            $pickup_time = $_POST['pickup_time'];
-            $dropoff_location_id = $_POST['dropoff_location_id'];
-            $dropoff_date = $_POST['dropoff_date'];
-            $dropoff_time = $_POST['dropoff_time'];
-            $payment_type_id = $_POST['payment_type_id'];
-            $model = $_POST['model'];
+            $dbc = DBConnection::getMysqli();
 
             require_once('models/order_model.php');
-
-            $dbc = DBConnection::getMysqli();
             $order = new Order($dbc);
+            $bool = $order->checkForm($_POST);
 
-            if(!$order->checkForm($_POST))
+            if(!$bool)
             {
-                $order->avaliableCars($model, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
-                /*$result = $order->book();
+                $first_name = $_POST['first_name'];
+                $last_name = $_POST['last_name'];
+                $phone = $_POST['phone'];
+                $email = $_POST['email'];
+                $quantity = $_POST['quantity'];
+                $pickup_location_id = $_POST['pickup_location_id'];
+                $pickup_date = $_POST['pickup_date'];
+                $pickup_time = $_POST['pickup_time'];
+                $dropoff_location_id = $_POST['dropoff_location_id'];
+                $dropoff_date = $_POST['dropoff_date'];
+                $dropoff_time = $_POST['dropoff_time'];
+                $payment_type_id = $_POST['payment_type_id'];
+                $model = $_POST['model'];
 
-            
-                if($result)
+                $avaliableCars = $order->avaliableCars($model, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+                
+                if(!empty($avaliableCars))
                 {
-                    require_once('views/message_view.php');
-                    $message = new Message();
-                    $view = $message->successfulReservationView();
+                    $result = $order->book($avaliableCars);
 
-                    return $view;
-                }   
+                    if($result)
+                    {
+                        require_once('views/message_view.php');
+                        $message = new Message();
+                        $view = $message->successfulReservationView();
+
+                        return $view;       
+                    }
+                    else
+                    {
+                        echo "booking error";
+                        // unknown booking error
+                    }    
+                }
                 else
                 {
-                    echo "rezervacija neuspjesna"; //error controller
-                }*/
+                    echo "no avaliable cars";
+                    // no avaliable cars
+                }
             }
             else
             {
-                echo "data missing"; // error controller
+                echo "data missing";
+                // data missing
             }
         }
     }
