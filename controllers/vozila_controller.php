@@ -73,7 +73,15 @@ class VozilaController
                 $payment_type_id = $_POST['payment_type_id'];
                 $model = $_POST['model'];
 
-                $avaliableCars = $order->avaliableCars($model, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+                $condition = "models.model = '$model' AND";
+
+                $avaliableCars = $order->avaliableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+
+                if(empty($avaliableCars))
+                {
+                    echo "in";
+                    $avaliableCars = $order->avaliableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);    
+                }
                 
                 if(!empty($avaliableCars))
                 {

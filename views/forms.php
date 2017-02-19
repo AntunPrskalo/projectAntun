@@ -25,7 +25,7 @@ class Form
 
     public function generateSearchFrom() 
     {
-        $view = "<form action='/projectantun/rezervacija/potvrdi' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
+        $view = "<form action='/projectantun/rezervacija/pretrazi' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
 
         $view .= "<tr> <th colspan = '2'>PRETRAGA VOZILA</th> </tr>"; // naslov
 

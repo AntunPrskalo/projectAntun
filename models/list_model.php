@@ -46,6 +46,33 @@ class ListModel
 
         return $data;
     }
+
+    public function  carsById($avaliableCars)
+    {
+        $str = implode(", ", $avaliableCars);
+
+        $query = "SELECT models.model_id, models.brand, models.model, COUNT(*)
+                  FROM cars
+                  INNER JOIN models ON cars.model_id = models.model_id
+                  WHERE car_id IN ($str)
+                  GROUP BY model_id;"; 
+
+        $result = mysqli_query($this->dbc, $query);
+
+        if($result)
+        {
+            $data = [];
+
+            while($row = mysqli_fetch_row($result))
+            {
+                $data[$row[0]] = array($row[1], $row[2], $row[3]);    
+            }
+        }
+        
+        $data = json_encode($data);
+
+        return $data;
+    }
          
 }
 
