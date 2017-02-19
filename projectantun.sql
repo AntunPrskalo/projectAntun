@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2017 at 12:48 AM
+-- Generation Time: Feb 19, 2017 at 08:25 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -88,6 +88,20 @@ INSERT INTO `car_class` (`class_id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `customers`
+--
+
+CREATE TABLE `customers` (
+  `customer_id` int(11) NOT NULL,
+  `first_name` varchar(255) NOT NULL DEFAULT '''''',
+  `last_name` varchar(255) NOT NULL DEFAULT '''''',
+  `phone` varchar(255) NOT NULL DEFAULT '''''',
+  `email` varchar(255) NOT NULL DEFAULT ''''''
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `locations`
 --
 
@@ -146,7 +160,7 @@ INSERT INTO `models` (`model_id`, `brand`, `model`, `transmission`, `air_conditi
 
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT '0',
   `order_date` date NOT NULL,
@@ -222,6 +236,12 @@ ALTER TABLE `car_class`
   ADD PRIMARY KEY (`class_id`);
 
 --
+-- Indexes for table `customers`
+--
+ALTER TABLE `customers`
+  ADD PRIMARY KEY (`customer_id`);
+
+--
 -- Indexes for table `locations`
 --
 ALTER TABLE `locations`
@@ -237,6 +257,12 @@ ALTER TABLE `models`
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
+  ADD PRIMARY KEY (`order_id`);
+
+--
+-- Indexes for table `order_details`
+--
+ALTER TABLE `order_details`
   ADD PRIMARY KEY (`order_id`);
 
 --
@@ -266,6 +292,11 @@ ALTER TABLE `cars`
 ALTER TABLE `car_class`
   MODIFY `class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
+-- AUTO_INCREMENT for table `customers`
+--
+ALTER TABLE `customers`
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+--
 -- AUTO_INCREMENT for table `locations`
 --
 ALTER TABLE `locations`
@@ -279,7 +310,7 @@ ALTER TABLE `models`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 --
 -- AUTO_INCREMENT for table `payment_type`
 --
