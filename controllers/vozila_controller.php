@@ -97,8 +97,12 @@ class VozilaController
                     }
                     else
                     {
-                        echo "booking error";
-                        // unknown booking error
+                        require_once('controllers/error_controller.php');
+                        $error = new ErrorController();
+                        $view = $error->unknownError();
+
+                        return $view;
+                        
                     }    
                 }
                 else
