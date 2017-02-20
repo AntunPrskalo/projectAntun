@@ -90,17 +90,13 @@ class VozilaController
                     {
                         require_once('views/message_view.php');
                         $message = new Message();
-                        $view = $message->successfulReservationView();
-
-                        return $view;       
+                        $view = $message->successfulReservationView();     
                     }
                     else
                     {
                         require_once('controllers/error_controller.php');
                         $error = new ErrorController();
-                        $view = $error->unknownError();
-
-                        return $view;                     
+                        $view = $error->unknownError();                  
                     }    
                 }
                 else
@@ -108,8 +104,6 @@ class VozilaController
                     require_once('controllers/error_controller.php');
                     $error = new ErrorController();
                     $view = $error->noAvailableCars();
-
-                    return $view;
                 }
             }
             else
@@ -117,10 +111,10 @@ class VozilaController
                 require_once('controllers/error_controller.php');
                 $error = new ErrorController();
                 $view = $error->dataMissing();
-
-                return $view;
             }
         }
+
+        return $view;
     }
 }
 

@@ -54,24 +54,24 @@ class RezervacijaController
                     $viewTemp = $listView->generateView();
 
                     $view = $formView . "<br>" . $viewTemp;
- 
-                    return $view;
                 }
                 else
                 {
-                    echo "No available cars on that date";
-                    // no available cars error
+                    require_once('controllers/error_controller.php');
+                    $error = new ErrorController();
+                    $view = $error->noAvailableCars();
                 }
-
-
             }
             else
             {
-                echo "Data missing";
-                // data missing error
+                require_once('controllers/error_controller.php');
+                $error = new ErrorController();
+                $view = $error->dataMissing();
             }   
         }
-    }    
+
+        return $view;
+    }
 }
 
 ?>
