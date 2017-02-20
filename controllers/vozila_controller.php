@@ -75,17 +75,17 @@ class VozilaController
 
                 $condition = "models.model = '$model' AND";
 
-                $avaliableCars = $order->avaliableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+                $availableCars = $order->availableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
 
-                if(empty($avaliableCars))
+                if(empty($availableCars))
                 {
                     echo "in";
-                    $avaliableCars = $order->avaliableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);    
+                    $availableCars = $order->availableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);    
                 }
                 
-                if(!empty($avaliableCars))
+                if(!empty($availableCars))
                 {
-                    $result = $order->book($avaliableCars);
+                    $result = $order->book($availableCars);
 
                     if($result)
                     {

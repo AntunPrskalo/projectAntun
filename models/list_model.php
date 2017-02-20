@@ -47,9 +47,9 @@ class ListModel
         return $data;
     }
 
-    public function  carsById($avaliableCars)
+    public function  carsById($availableCars)
     {
-        $str = implode(", ", $avaliableCars);
+        $str = implode(", ", $availableCars);
 
         $query = "SELECT models.model_id, models.brand, models.model, COUNT(*)
                   FROM cars

@@ -34,16 +34,16 @@ class RezervacijaController
 
                 $condition = "";
 
-                $avaliableCars1 = $order->avaliableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
-                $avaliableCars2 = $order->avaliableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+                $availableCars1 = $order->availableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+                $availableCars2 = $order->availableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
 
-                $avaliableCars = array_merge($avaliableCars1, $avaliableCars2);
+                $availableCars = array_merge($availableCars1, $availableCars2);
 
-                if(!empty($avaliableCars))
+                if(!empty($availableCars))
                 {
                     require_once('models/list_model.php');
                     $listModel = new ListModel($dbc);
-                    $data = $listModel->carsById($avaliableCars);
+                    $data = $listModel->carsById($availableCars);
 
                     require_once('views/forms.php');
                     require_once('views/list_view.php');
@@ -60,8 +60,8 @@ class RezervacijaController
                 }
                 else
                 {
-                    echo "No avaliable cars on that date";
-                    // no avaliable cars error
+                    echo "No available cars on that date";
+                    // no available cars error
                 }
 
 

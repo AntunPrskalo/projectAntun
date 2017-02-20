@@ -18,9 +18,9 @@ class Order
 
 
 
-    public function avaliableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
+    public function availableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
-        $avaliableCars = array();
+        $availableCars = array();
 
         // Auta koja NISU rezervirana 
         $query1 = "SELECT cars.car_id FROM orders
@@ -36,17 +36,17 @@ class Order
         {
             while($row = mysqli_fetch_row($result1))
             {
-                $avaliableCars[] = $row[0];
+                $availableCars[] = $row[0];
             }
         }
 
-        return $avaliableCars;
+        return $availableCars;
     }
 
-    public function avaliableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
+    public function availableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
-        $avaliableCarsTemp = array();
-        $unavaliableCars = array();
+        $availableCarsTemp = array();
+        $unavailableCars = array();
 
         // Auta koja SU rezervirana ali se vremena rezervacije NE PREKLAPAJU
         $query2 = "SELECT DISTINCT cars.car_id FROM orders
@@ -65,7 +65,7 @@ class Order
         {
             while($row = mysqli_fetch_row($result2))
             {
-                $avaliableCarsTemp[] = $row[0];
+                $availableCarsTemp[] = $row[0];
             }
         }
 
@@ -86,19 +86,19 @@ class Order
         {
             while($row = mysqli_fetch_row($result3))
             {
-                $unavaliableCars[] = $row[0];
+                $unavailableCars[] = $row[0];
             }
         }
 
-        $avaliableCars = array_diff($avaliableCarsTemp, $unavaliableCars);
+        $availableCars = array_diff($availableCarsTemp, $unavailableCars);
     
 
-        return $avaliableCars;    
+        return $availableCars;    
     }
 
 
 
-    public function book($avaliableCars)
+    public function book($availableCars)
     {
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
@@ -114,11 +114,11 @@ class Order
         $payment_type_id = $_POST['payment_type_id'];
         $model = $_POST['model'];
 
-        $i = array_rand($avaliableCars);
-        $item_id = $avaliableCars[$i];
+        $i = array_rand($availableCars);
+        $item_id = $availableCars[$i];
 
         echo "Dostupna auta";
-        var_dump($avaliableCars);
+        var_dump($availableCars);
         echo "Odabrano auto $item_id";
         
         $query2 = "INSERT INTO `customers`(`first_name`, `last_name`, `phone`, `email`) 
