@@ -101,20 +101,25 @@ class VozilaController
                         $error = new ErrorController();
                         $view = $error->unknownError();
 
-                        return $view;
-                        
+                        return $view;                     
                     }    
                 }
                 else
                 {
-                    echo "no avaliable cars";
-                    // no avaliable cars
+                    require_once('controllers/error_controller.php');
+                    $error = new ErrorController();
+                    $view = $error->noAvailableCars();
+
+                    return $view;
                 }
             }
             else
             {
-                echo "data missing";
-                // data missing
+                require_once('controllers/error_controller.php');
+                $error = new ErrorController();
+                $view = $error->dataMissing();
+
+                return $view;
             }
         }
     }

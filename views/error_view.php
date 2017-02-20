@@ -13,6 +13,11 @@ class ErrorView
     {
         $view = "<p> Nema slobodnih automobila na ovoj lokaciji </p>";
     }
+
+    public function dataMissingView()
+    {
+        $view = "<p> Data missing </p>";
+    }
 }
 
 ?>

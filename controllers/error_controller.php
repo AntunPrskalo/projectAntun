@@ -26,7 +26,15 @@ class ErrorController
         $view = $formView . "<br>" . $viewTemp;
 
         return $view;
-    }    
+    }
+
+    public function dataMissing()
+    {
+        $errorView = new ErrorView();
+        $view = $errorView->dataMissingView();
+
+        return $view;
+    }  
 }
 
 ?>
