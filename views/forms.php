@@ -75,10 +75,6 @@ HTML;
     {
         $view = <<<HTML
                     <tr>
-                        <td><span>Količina:</span></td>
-                        <td><input type="text" name = 'quantity' value = "1"></td>
-                    </tr>
-                    <tr>
                         <td><span>Mjesto preuzimanja:</span></td>
                         <td>
                             <select name = "pickup_location_id">

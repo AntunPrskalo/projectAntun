@@ -63,7 +63,6 @@ class VozilaController
                 $last_name = $_POST['last_name'];
                 $phone = $_POST['phone'];
                 $email = $_POST['email'];
-                $quantity = $_POST['quantity'];
                 $pickup_location_id = $_POST['pickup_location_id'];
                 $pickup_date = $_POST['pickup_date'];
                 $pickup_time = $_POST['pickup_time'];

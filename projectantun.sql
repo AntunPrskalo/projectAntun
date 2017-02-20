@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2017 at 08:25 PM
+-- Generation Time: Feb 20, 2017 at 05:43 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -162,7 +162,6 @@ CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT '0',
   `order_date` date NOT NULL,
   `order_time` time NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

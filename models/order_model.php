@@ -104,7 +104,6 @@ class Order
         $last_name = $_POST['last_name'];
         $phone = $_POST['phone'];
         $email = $_POST['email'];
-        $quantity = $_POST['quantity'];
         $pickup_location_id = $_POST['pickup_location_id'];
         $pickup_date = $_POST['pickup_date'];
         $pickup_time = $_POST['pickup_time'];
@@ -127,8 +126,8 @@ class Order
         $result = mysqli_query($this->dbc, $query2);
         $customer_id = mysqli_insert_id($this->dbc);
       
-        $query3 = "INSERT INTO `orders`(`customer_id`, `item_id`, `quantity`, `order_date`, `order_time`) 
-                   VALUES ('$customer_id', '$item_id', '$quantity', NOW(), NOW());";
+        $query3 = "INSERT INTO `orders`(`customer_id`, `item_id`, `order_date`, `order_time`) 
+                   VALUES ('$customer_id', '$item_id', NOW(), NOW());";
         
         $result = mysqli_query($this->dbc, $query3);
         $order_id = mysqli_insert_id($this->dbc);
