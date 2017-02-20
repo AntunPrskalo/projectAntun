@@ -78,7 +78,6 @@ class VozilaController
 
                 if(empty($availableCars))
                 {
-                    echo "in";
                     $availableCars = $order->availableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);    
                 }
                 

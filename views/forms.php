@@ -27,7 +27,7 @@ class Form
     {
         $view = "<form action='/projectantun/rezervacija/pretrazi' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
 
-        $view .= "<tr> <th colspan = '2'>PRETRAGA VOZILA</th> </tr>"; // naslov
+        $view .= "<tr> <th colspan = '3'>PRETRAGA VOZILA</th> </tr>"; // naslov
 
         $view .= $this->reservationInfoForm();
 
