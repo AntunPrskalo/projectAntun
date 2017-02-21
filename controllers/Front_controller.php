@@ -37,7 +37,7 @@ class FrontController
         require_once('models/authentication_model.php');
         $auth = new Authentication();
         $result = $auth->validateKey();
-        var_dump($result);
+ 
         if(!$result)
         {
             $this->controller = 'login';
