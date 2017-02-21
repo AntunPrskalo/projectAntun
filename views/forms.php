@@ -6,11 +6,11 @@ class Form
     {
         $view = "<form action='/projectantun/vozila/potvrdi' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
 
-        $view .= "<tr> <th colspan = '2'>REZERVACIJSKA FORMA</th> </tr>"; // naslov
+        $view .= "<tr> <th colspan = '3'>REZERVACIJA</th> </tr>"; // naslov
 
         $view .= $this->reservationInfoForm();
 
-        $view .= "<tr> <td> <input type = 'submit' name = 'bookSubmit' value = 'POTVRDI REZERVACIJU'> </td> </tr>"; // submit button
+        $view .= "<td> <input type = 'submit' name = 'bookSubmit' value = 'POTVRDI'> </td> </tr>"; // submit button
 
         $view .= "</table>"; // zatvori table
 
@@ -165,7 +165,7 @@ HTML;
                         <td><input type="date" name = 'dropoff_date' value = ""></td>
                         <td><span>Vrijeme povrata:</span></td>
                         <td><input type="time" name = 'dropoff_time' value = ""></td>
-                    </tr>
+                    
 HTML;
         return $view;       
     }

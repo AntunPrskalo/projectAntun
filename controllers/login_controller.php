@@ -33,8 +33,11 @@ class LoginController
 
                 if($result)
                 {
-                    echo "logged in";
-                    // token
+                    require_once('models/authentication_model.php');
+                    $auth = new Authentication();
+                    $auth->createKey($username_email);
+                    header('Location: /projectantun/');
+     
                 }
                 else
                 {

@@ -34,6 +34,15 @@ class FrontController
             unset($url[0]);
         }
 
+        require_once('models/authentication_model.php');
+        $auth = new Authentication();
+        $result = $auth->validateKey();
+        var_dump($result);
+        if(!$result)
+        {
+            $this->controller = 'login';
+        }
+
         require_once('controllers/' . $this->controller . '_controller.php');
         $class = $this->controller . "Controller";
         $this->controller = new $class;
@@ -78,9 +87,7 @@ class FrontController
 
     public function getView()
     {
-        echo $this->getHeader();
         echo $this->view;
-        echo $this->getFooter();
     }      
 }
 
