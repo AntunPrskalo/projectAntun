@@ -33,7 +33,8 @@ class LoginController
                 if($result)
                 {
                     $user->createKey();
-                    /*header('Location: /projectAntun/');*/
+                    header('') // prvi put dirrektno poslati bez validate, jer cookie jos nije dostupan
+
                 }
                 else
                 {

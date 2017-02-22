@@ -93,6 +93,7 @@ class User
     public function createKey()
     {
         $user_key = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+
         $query = "UPDATE `users` SET `user_key`= '$user_key' WHERE '$this->user_id';";
         $result = mysqli_query($this->dbc, $query);
 
@@ -112,7 +113,6 @@ class User
 
     public function validateKey()
     {
-        var_dump($_COOKIE);
         if(isset($_COOKIE['login']))
         {
             list($user_id, $hash) = explode(',', $_COOKIE['login']);
@@ -125,9 +125,7 @@ class User
                 $row = mysqli_fetch_assoc($result);
                 $user_key = $row['user_key'];
 
-                $key = md5($this->user_id . $user_key);
-                var_Dump($key);
-                var_dump($hash);
+                $key = md5($user_id . $user_key);
 
                 if($key == $hash)
                 {
