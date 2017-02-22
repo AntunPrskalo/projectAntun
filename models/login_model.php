@@ -11,18 +11,42 @@ class LoginModel extends RegistrationModel
         $dbc = DbConnection::getMysqli();
 
         $this->dbc = $dbc;
-        $this->username_email = $username_email;
-        $this->password = $password;
+        $this->username_email = mysqli_real_escape_string($this->dbc, $username_email);
+        $this->password = mysqli_real_escape_string($this->dbc, $password);
     }
 
     public function loginUser()
     {
-        $query = "SELECT * FROM users WHERE password = '$this->password' AND (username = '$this->username_email' OR email = '$this->username_email');";
-        $result = mysqli_query($this->dbc, $query);
-        
-        $numRows = mysqli_num_rows($result);
+        $saltQuery = "SELECT salt FROM users WHERE (username = '$this->username_email' OR email = '$this->username_email');";
+        $result1 = mysqli_query($this->dbc, $saltQuery);
+        var_dump($result1);
 
-        return $numRows;     
+        if(mysqli_num_rows($result1) == 1)
+        {
+            $row = mysqli_fetch_assoc($result1);
+            $salt = $row['salt'];
+            var_dump($salt);
+        }
+        else
+        {
+            return false;
+        }
+        $saltedPassword = $this->password . $salt;
+        $hashedPassword = hash('sha256', $saltedPassword);
+
+        $query = "SELECT * FROM users WHERE password = '$hashedPassword' AND (username = '$this->username_email' OR email = '$this->username_email');";
+        $result2 = mysqli_query($this->dbc, $query);
+        
+        if(mysqli_num_rows($result2) == 1)
+        {
+            $userInfo = mysqli_fetch_row($result2);
+            var_dump($userInfo);
+            return $userInfo;
+        }
+        else
+        {
+            return false;
+        }
     }    
 }
 

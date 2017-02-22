@@ -34,14 +34,18 @@ class FrontController
             unset($url[0]);
         }
 
-        require_once('models/authentication_model.php');
-        $auth = new Authentication();
-        $result = $auth->validateKey();
- 
-        if(!$result)
+        if(!($this->controller == 'login' || $this->controller == 'registracija'))
         {
-            $this->controller = 'login';
+            require_once('models/user_model.php');
+            $user = new User();
+            $result = $user->validateKey();
+ 
+            if(!$result)
+            {
+                $this->controller = 'login';
+            }    
         }
+
 
         require_once('controllers/' . $this->controller . '_controller.php');
         $class = $this->controller . "Controller";

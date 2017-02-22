@@ -20,19 +20,23 @@ class RegistrationModel
 
     final public function registerUser()
     {
-        $first_name = $_POST['first_name'];
-        $last_name = $_POST['last_name'];
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $confirm_password = $_POST['confirm_password'];
-        $phone = $_POST['phone'];
-        $city = $_POST['city'];
-        $country = $_POST['country'];
-        $address = $_POST['address'];
-        $email = $_POST['email'];
+        $first_name = mysqli_real_escape_string($this->dbc, $_POST['first_name']);
+        $last_name = mysqli_real_escape_string($this->dbc, $_POST['last_name']);
+        $username = mysqli_real_escape_string($this->dbc, $_POST['username']);
+        $password = mysqli_real_escape_string($this->dbc, $_POST['password']);
+        $phone = mysqli_real_escape_string($this->dbc, $_POST['phone']);
+        $city = mysqli_real_escape_string($this->dbc, $_POST['city']);
+        $country = mysqli_real_escape_string($this->dbc, $_POST['country']);
+        $address = mysqli_real_escape_string($this->dbc, $_POST['address']);
+        $email = mysqli_real_escape_string($this->dbc, $_POST['email']);
 
-        $query = "INSERT INTO `users`(`username`, `password`, `first_name`, `last_name`, `phone`, `city`, `country`, `address`, `email`) 
-                VALUES ('$username', '$password', '$first_name', '$last_name', '$phone', '$city', '$country', '$address', '$email')";
+        $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+        $saltedPassword = $password . $salt;
+        $hashedPassword = hash('sha256', $saltedPassword);
+        var_dump($hashedPassword);
+
+        $query = "INSERT INTO `users`(`username`, `password`, `first_name`, `last_name`, `phone`, `city`, `country`, `address`, `email`, `salt`) 
+                VALUES ('$username', '$hashedPassword', '$first_name', '$last_name', '$phone', '$city', '$country', '$address', '$email', '$salt')";
 
         $result = mysqli_query($this->dbc, $query);
 

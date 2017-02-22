@@ -4,8 +4,7 @@ class LoginController
 {
     public function __construct()
     {
-        require_once('models/registration_model.php');
-        require_once('models/login_model.php');
+        require_once('models/user_model.php');
         require_once('views/forms.php');
     }
     public function index()
@@ -22,20 +21,18 @@ class LoginController
         {
             $username_email = $_POST['username_email'];
             $password = $_POST['password'];
-            $loginModel = new LoginModel($username_email, $password);
-            $bool = $loginModel->checkParams(array($username_email, $password));
+            $user = new User();
+            $bool = $user->checkParams(array($username_email, $password));
 
             if(!$bool)
             {
                 $username_email = $_POST['username_email'];
                 $password = $_POST['password'];
-                $result = $loginModel->loginUser();
+                $result = $user->loginUser($username_email, $password);
 
                 if($result)
                 {
-                    require_once('models/authentication_model.php');
-                    $auth = new Authentication();
-                    $auth->createKey($username_email);
+                    $user->createKey();
                     header('Location: /projectantun/');
      
                 }
