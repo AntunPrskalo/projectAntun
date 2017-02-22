@@ -39,11 +39,12 @@ class User
         $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
         $saltedPassword = $password . $salt;
         $hashedPassword = hash('sha256', $saltedPassword);
-
-        $query = "INSERT INTO `users`(`username`, `password`, `first_name`, `last_name`, `phone`, `city`, `country`, `address`, `email`, `salt`) 
-                VALUES ('$username', '$hashedPassword', '$first_name', '$last_name', '$phone', '$city', '$country', '$address', '$email', '$salt')";
-
+        var_dump($hashedPassword);
+        $query = "INSERT INTO `users`(`username`, `password`, `first_name`, `last_name`, `phone`, `city`, `country`, `address`, `email`, `salt`, `user_key`) 
+                VALUES ('$username', '$hashedPassword', '$first_name', '$last_name', '$phone', '$city', '$country', '$address', '$email', '$salt', '');";
+        var_dump($this->dbc);
         $result = mysqli_query($this->dbc, $query);
+        var_dump($result);
 
         return $result;
     }
@@ -94,7 +95,7 @@ class User
     {
         $user_key = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
 
-        $query = "UPDATE `users` SET `user_key`= '$user_key' WHERE '$this->user_id';";
+        $query = "UPDATE `users` SET `user_key`= '$user_key' WHERE `user_id` = '$this->user_id';";
         $result = mysqli_query($this->dbc, $query);
 
         if($result)

@@ -2,9 +2,14 @@
 
 class RegistracijaController
 {
+    public $user;
+
     public function __construct()
     {
         require_once('views/forms.php');
+        require_once('models/user_model.php');
+
+        $this->user = new User;
     }
 
     public function index()
@@ -20,7 +25,7 @@ class RegistracijaController
 
     public function potvrdi()
     {
-        $bool = $user->checkParams($_POST);
+        $bool = $this->user->checkParams($_POST);
 
         if(!$bool)
         {
@@ -29,7 +34,7 @@ class RegistracijaController
 
             if($password == $confirm_password)
             {
-                $result = $user->registerUser();
+                $result = $this->user->registerUser();
 
                 if($result)
                 {
