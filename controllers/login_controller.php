@@ -33,8 +33,7 @@ class LoginController
                 if($result)
                 {
                     $user->createKey();
-                    header('Location: /projectantun/');
-     
+                    /*header('Location: /projectAntun/');*/
                 }
                 else
                 {

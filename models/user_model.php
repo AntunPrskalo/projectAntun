@@ -11,7 +11,7 @@ class User
 
     public function __construct()
     {
-        require('models/dbc_model.php');
+        require_once('models/dbc_model.php');
         $dbc = DbConnection::getMysqli();
 
         $this->dbc = $dbc;
@@ -60,7 +60,6 @@ class User
         {
             $row = mysqli_fetch_assoc($result1);
             $salt = $row['salt'];
-            var_dump($salt);
         }
         else
         {
@@ -94,14 +93,14 @@ class User
     public function createKey()
     {
         $user_key = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
-        $query = "INSERT INTO users (user_key) VALUES ('$user_key') WHERE user_id = '$this->user_id';";
+        $query = "UPDATE `users` SET `user_key`= '$user_key' WHERE '$this->user_id';";
         $result = mysqli_query($this->dbc, $query);
+
         if($result)
         {
             $key = md5($this->user_id . $user_key);
-            var_dump($key);
 
-            setcookie('login', $this->user_id . "." . $key, time() + 3600, "/");
+            setcookie('login', $this->user_id . "," . $key, time() + 3600, "/");
 
             return true;    
         }
@@ -113,19 +112,22 @@ class User
 
     public function validateKey()
     {
+        var_dump($_COOKIE);
         if(isset($_COOKIE['login']))
         {
             list($user_id, $hash) = explode(',', $_COOKIE['login']);
 
-            $query = "SELECT user_key FROM users WHERE user_id = '$this->user_id';";
-            $result = mysqli($this->dbc, $query);
-
+            $query = "SELECT user_key FROM users WHERE user_id = '$user_id';";
+            $result = mysqli_query($this->dbc, $query);
+  
             if(mysqli_num_rows($result) == 1)
             {
                 $row = mysqli_fetch_assoc($result);
                 $user_key = $row['user_key'];
 
                 $key = md5($this->user_id . $user_key);
+                var_Dump($key);
+                var_dump($hash);
 
                 if($key == $hash)
                 {
