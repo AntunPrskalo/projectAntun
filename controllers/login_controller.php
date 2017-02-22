@@ -4,7 +4,6 @@ class LoginController
 {
     public function __construct()
     {
-        require_once('models/user_model.php');
         require_once('views/forms.php');
     }
     public function index()
@@ -21,6 +20,8 @@ class LoginController
         {
             $username_email = $_POST['username_email'];
             $password = $_POST['password'];
+
+            require_once('models/user_model.php');
             $user = new User();
             $bool = $user->checkParams(array($username_email, $password));
 
@@ -32,9 +33,16 @@ class LoginController
 
                 if($result)
                 {
-                    $user->createKey();
-                    header('') // prvi put dirrektno poslati bez validate, jer cookie jos nije dostupan
+                    $keyArr = $user->createKey();
+ 
+                    if(!empty($keyArr))
+                    {
+                        session_start();
+                        $_SESSION['user_id'] = $keyArr['user_id'];
+                        $_SESSION['key'] = $keyArr['key'];
 
+                        header('Location: /projectAntun/');
+                    }
                 }
                 else
                 {

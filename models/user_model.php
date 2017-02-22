@@ -103,7 +103,7 @@ class User
 
             setcookie('login', $this->user_id . "," . $key, time() + 3600, "/");
 
-            return true;    
+            return array("user_id" => $this->user_id, "key" => $key);    
         }
         else
         {
@@ -111,9 +111,9 @@ class User
         }
     }
 
-    public function validateKey()
+    public function validateKey($keyArr)
     {
-        if(isset($_COOKIE['login']))
+        if(isset($_COOKIE['login']) && empty($keyArr))
         {
             list($user_id, $hash) = explode(',', $_COOKIE['login']);
 
@@ -141,8 +141,34 @@ class User
                 return false;
             }
         }
+        elseif(!empty($keyArr))
+        {
+            echo "out";
+            $user_id = $keyArr[0];
+            var_dump($user_id);
 
-        return false;
+            $query = "SELECT user_key FROM users WHERE user_id = '$user_id';";
+            $result = mysqli_query($this->dbc, $query);
+
+            if(mysqli_num_rows($result) == 1)
+            {
+                $row = mysqli_fetch_assoc($result);
+                var_dump($row);
+                $user_key = $row['user_key'];
+                $key = md5($user_id . $user_key);
+
+                if($key == $keyArr[1])
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    public function logOutUser()
+    {
+        setcookie('login', "", time() - 1, "/");
+        header('Location: /projectAntun/login');
     }
 }
 

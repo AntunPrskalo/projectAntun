@@ -4,7 +4,6 @@ class RegistracijaController
 {
     public function __construct()
     {
-        require_once('models/user_model.php');
         require_once('views/forms.php');
     }
 
@@ -21,7 +20,6 @@ class RegistracijaController
 
     public function potvrdi()
     {
-        $user = new User();
         $bool = $user->checkParams($_POST);
 
         if(!$bool)
