@@ -25,13 +25,13 @@ class Order
         // Auta koja NISU rezervirana 
         $query1 = "SELECT cars.car_id FROM orders
                    RIGHT OUTER JOIN cars
-                   ON orders.item_id = cars.car_id
+                   ON orders.car_id = cars.car_id
                    INNER JOIN models
                    ON models.model_id = cars.model_id
                    WHERE $condition location_id = '$pickup_location_id' AND orders.order_id IS NULL;";
 
         $result1 = mysqli_query($this->dbc, $query1);
-
+        var_dump($result1);
         if($result1)
         {
             while($row = mysqli_fetch_row($result1))
@@ -53,14 +53,14 @@ class Order
                 INNER JOIN order_details
                 ON orders.order_id = order_details.order_id
                 INNER JOIN cars
-                ON orders.item_id = cars.car_id
+                ON orders.car_id = cars.car_id
                 INNER JOIN models
                 ON models.model_id = cars.model_id
                 WHERE $condition ((order_details.dropoff_location_id = '$pickup_location_id' AND order_details.dropoff_date < '$pickup_date')
                 OR (order_details.pickup_location_id = '$dropoff_location_id' AND order_details.pickup_date > '$dropoff_date'));";
 
         $result2 = mysqli_query($this->dbc, $query2);
-
+        var_dump($result2);
         if($result2)
         {
             while($row = mysqli_fetch_row($result2))
@@ -74,7 +74,7 @@ class Order
                 INNER JOIN order_details
                 ON orders.order_id = order_details.order_id
                 INNER JOIN cars
-                ON orders.item_id = cars.car_id
+                ON orders.car_id = cars.car_id
                 INNER JOIN models
                 ON models.model_id = cars.model_id
                 WHERE $condition !((order_details.dropoff_location_id = '$pickup_location_id' AND order_details.dropoff_date < '$pickup_date')
@@ -100,10 +100,6 @@ class Order
 
     public function book($availableCars)
     {
-        $first_name = $_POST['first_name'];
-        $last_name = $_POST['last_name'];
-        $phone = $_POST['phone'];
-        $email = $_POST['email'];
         $pickup_location_id = $_POST['pickup_location_id'];
         $pickup_date = $_POST['pickup_date'];
         $pickup_time = $_POST['pickup_time'];
@@ -114,28 +110,24 @@ class Order
         $model = $_POST['model'];
 
         $i = array_rand($availableCars);
-        $item_id = $availableCars[$i];
+        $car_id = $availableCars[$i];
 
         echo "Dostupna auta";
         var_dump($availableCars);
-        echo "Odabrano auto $item_id";
+        echo "Odabrano auto $car_id";
         
-        $query2 = "INSERT INTO `customers`(`first_name`, `last_name`, `phone`, `email`) 
-                   VALUES ('$first_name', '$last_name', '$phone', '$email')";
-
-        $result = mysqli_query($this->dbc, $query2);
-        $customer_id = mysqli_insert_id($this->dbc);
+        list($user_id, $hash) = explode(',', $_COOKIE['login']);
       
-        $query3 = "INSERT INTO `orders`(`customer_id`, `item_id`, `order_date`, `order_time`) 
-                   VALUES ('$customer_id', '$item_id', NOW(), NOW());";
+        $query1 = "INSERT INTO `orders`(`user_id`, `car_id`, `order_date`, `order_time`) 
+                   VALUES ('$user_id', '$car_id', NOW(), NOW());";
         
-        $result = mysqli_query($this->dbc, $query3);
+        $result = mysqli_query($this->dbc, $query1);
         $order_id = mysqli_insert_id($this->dbc);
 
-        $query4 = "INSERT INTO `order_details`(`order_id`, `payment_type_id`, `pickup_location_id`, `pickup_date`, `pickup_time`, `dropoff_location_id`, `dropoff_date`, `dropoff_time`) 
+        $query2 = "INSERT INTO `order_details`(`order_id`, `payment_type_id`, `pickup_location_id`, `pickup_date`, `pickup_time`, `dropoff_location_id`, `dropoff_date`, `dropoff_time`) 
                    VALUES ('$order_id', '$payment_type_id', '$pickup_location_id', '$pickup_date', '$pickup_time', '$dropoff_location_id', '$dropoff_date', '$dropoff_time');";
         
-        $result = mysqli_query($this->dbc, $query4);
+        $result = mysqli_query($this->dbc, $query2);
 
         return $result;
     }

@@ -59,10 +59,7 @@ class VozilaController
 
             if(!$bool)
             {
-                $first_name = $_POST['first_name'];
-                $last_name = $_POST['last_name'];
-                $phone = $_POST['phone'];
-                $email = $_POST['email'];
+                var_dump($_POST);
                 $pickup_location_id = $_POST['pickup_location_id'];
                 $pickup_date = $_POST['pickup_date'];
                 $pickup_time = $_POST['pickup_time'];
@@ -75,7 +72,7 @@ class VozilaController
                 $condition = "models.model = '$model' AND";
 
                 $availableCars = $order->availableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
-
+                var_dump($availableCars);
                 if(empty($availableCars))
                 {
                     echo "in";

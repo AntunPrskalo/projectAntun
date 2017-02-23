@@ -9,6 +9,8 @@ class Form
         $view .= "<tr> <th colspan = '3'>REZERVACIJA</th> </tr>"; // naslov
 
         $view .= $this->reservationInfoForm();
+        $view .= "</tr>";
+        $view .= $this->paymentInfoForm();
 
         $view .= "<td> <input type = 'submit' name = 'bookSubmit' value = 'POTVRDI'> </td> </tr>"; // submit button
 

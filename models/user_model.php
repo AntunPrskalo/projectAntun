@@ -144,9 +144,7 @@ class User
         }
         elseif(!empty($keyArr))
         {
-            echo "out";
             $user_id = $keyArr[0];
-            var_dump($user_id);
 
             $query = "SELECT user_key FROM users WHERE user_id = '$user_id';";
             $result = mysqli_query($this->dbc, $query);
@@ -154,7 +152,7 @@ class User
             if(mysqli_num_rows($result) == 1)
             {
                 $row = mysqli_fetch_assoc($result);
-                var_dump($row);
+
                 $user_key = $row['user_key'];
                 $key = md5($user_id . $user_key);
 
