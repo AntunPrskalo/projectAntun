@@ -15,6 +15,9 @@ class MainView
                 <tr>
                     <td> <a href = '/projectantun/mojeRezervacije'> MOJE REZERVACIJE <a> </td>
                 </tr>
+                <tr>
+                    <td> <a href = '/projectantun/odjava'> ODJAVA <a> </td>
+                </tr>
             </table>
 HTML;
 

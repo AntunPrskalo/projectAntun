@@ -161,7 +161,7 @@ INSERT INTO `models` (`model_id`, `brand`, `model`, `transmission`, `air_conditi
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
-  `item_id` int(11) NOT NULL,
+  `car_id` int(11) NOT NULL,
   `order_date` date NOT NULL,
   `order_time` time NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

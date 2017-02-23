@@ -6,12 +6,13 @@ class Form
     {
         $view = "<form action='/projectantun/vozila/potvrdi' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
 
-        $view .= "<tr> <th colspan = '2'>REZERVACIJSKA FORMA</th> </tr>"; // naslov
+        $view .= "<tr> <th colspan = '3'>REZERVACIJA</th> </tr>"; // naslov
 
-        $view .= $this->personalInfoForm();
         $view .= $this->reservationInfoForm();
+        $view .= "</tr>";
+        $view .= $this->paymentInfoForm();
 
-        $view .= "<tr> <td> <input type = 'submit' name = 'bookSubmit' value = 'POTVRDI REZERVACIJU'> </td> </tr>"; // submit button
+        $view .= "<td> <input type = 'submit' name = 'bookSubmit' value = 'POTVRDI'> </td> </tr>"; // submit button
 
         $view .= "</table>"; // zatvori table
 
@@ -38,6 +39,47 @@ class Form
         return $view; 
 
     }
+
+    public function generateLoginForm()
+    {
+        $view = <<<HTML
+            <form action='/projectAntun/login/potvrdi' method = 'POST'>
+                <table>
+                    <tr>
+                        <th colspan = '2'>LOGIN</th>
+                    </tr>
+                    <tr>
+                        <td><span>Username/Email:</span></td>
+                        <td><input type='text' name = 'username_email' value = ''></td>
+                    </tr>
+                    <tr>
+                        <td><span>Password:</span></td>
+                        <td><input type='password' name = 'password' value = ''></td>
+                        <td><input type='submit' name = 'loginSubmit' value = 'LOGIN'></td>
+                    </tr>
+                </table>
+            </form>
+
+            <p>Nemate profil?  <a href = '/projectAntun/registracija'>Registrirajte se</a> </p>   
+HTML;
+            return $view; 
+    }
+
+    public function generateRegistrationForm()
+    {
+        $view = "<form action='/projectantun/registracija/potvrdi' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
+
+        $view .= "<tr> <th colspan = '2'>REGISTRACIJA</th> </tr>"; // naslov
+
+        $view .= $this->personalInfoForm();
+
+        $view .= "<td> <input type = 'submit' name = 'registrationSubmit' value = 'POTVRDI'> </td> </tr>"; // submit button
+
+        $view .= "</table></form>"; // zatvori form, table
+
+        return $view; 
+    }
+
     public function personalInfoForm()
     {
         $view = <<<HTML
@@ -50,22 +92,36 @@ class Form
                         <td><input type="text" name = 'last_name' value = ""></td>
                     </tr>
                     <tr>
+                        <td><span>Korisnicko ime:</span></td>
+                        <td><input type="text" name = 'username' value = ""></td>
+                    </tr>
+                    <tr>
+                        <td><span>Zaporka:</span></td>
+                        <td><input type="password" name = 'password' value = ""></td>
+                    </tr>
+                    <tr>
+                        <td><span>Potvrdite zaporku:</span></td>
+                        <td><input type="password" name = 'confirm_password' value = ""></td>
+                    </tr>
+                    <tr>
                         <td><span>Broj telefona ili mobitela:</span></td>
                         <td><input type="text" name = 'phone' value = ""></td>
                     </tr>
                     <tr>
-                        <td><span>Email adresa:</span></td>
-                        <td><input type="text" name = 'email' value = ""></td>
+                        <td><span>Grad stanovanja:</span></td>
+                        <td><input type="text" name = 'city' value = ""></td>
                     </tr>
                     <tr>
-                        <td><span>Način plaćanja:</span></td>
-                        <td>
-                            <select name = "payment_type_id">
-                                <option value="1">PayPal</option>
-                                <option value="2">Kreditna kartica</option>
-                            </select>
-                        </td>
+                        <td><span>Drzava stanovanja:</span></td>
+                        <td><input type="text" name = 'country' value = ""></td>
                     </tr>
+                    <tr>
+                        <td><span>Adresa stanovanja:</span></td>
+                        <td><input type="text" name = 'address' value = ""></td>
+                    </tr>
+                    <tr>
+                        <td><span>Email adresa:</span></td>
+                        <td><input type="text" name = 'email' value = ""></td>
 HTML;
 
         return $view;
@@ -111,9 +167,26 @@ HTML;
                         <td><input type="date" name = 'dropoff_date' value = ""></td>
                         <td><span>Vrijeme povrata:</span></td>
                         <td><input type="time" name = 'dropoff_time' value = ""></td>
-                    </tr>
+                    
 HTML;
         return $view;       
+    }
+
+    public function paymentInfoForm()
+    {
+        $view = <<<HTML
+                    <tr>
+                        <td><span>Način plaćanja:</span></td>
+                        <td>
+                            <select name = "payment_type_id">
+                                <option value="1">PayPal</option>
+                                <option value="2">Kreditna kartica</option>
+                            </select>
+                        </td>
+                    </tr>
+HTML;
+
+        return $view;        
     }
 }
 

@@ -15,10 +15,8 @@ class DbConnection
             echo "Connection to the database failed " . mysqli_connect_errno() . " => " . mysqli_connect_error() . "<br>";
         }
         else {
-            echo "Connection successful<br>";
+            return $dbc;    
         }
-
-        return $dbc;
     } 
 }
 
