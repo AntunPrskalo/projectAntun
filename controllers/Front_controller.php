@@ -33,35 +33,6 @@ class FrontController
             $this->controller = $url[0];
             unset($url[0]);
         }
-
-        require_once('models/user_model.php');
-        $user = new User();
-
-        session_start();
-
-        if(isset($_SESSION['user_id']) && isset($_SESSION['key']))
-        {
-            $user_id = $_SESSION['user_id'];
-            $user_key = $_SESSION['key'];
-
-            $result = $user->validateKey(array($user_id, $user_key));
- 
-            if($result)
-            {
-                $this->controller = 'home';
-                session_destroy();
-            }    
-        }
-        else
-        {
-            session_destroy();
-            $result = $user->validateKey(array());
-
-            if(!$result && $this->controller != 'registracija') 
-            {
-                $this->controller = 'login';     
-            } 
-        }
    
         require_once('controllers/' . $this->controller . '_controller.php');
         $class = $this->controller . "Controller";

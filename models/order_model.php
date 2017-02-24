@@ -31,12 +31,12 @@ class Order
                    WHERE $condition location_id = '$pickup_location_id' AND orders.order_id IS NULL;";
 
         $result1 = mysqli_query($this->dbc, $query1);
-        var_dump($result1);
+        
         if($result1)
         {
-            while($row = mysqli_fetch_row($result1))
+            while($row = mysqli_fetch_assoc($result1))
             {
-                $availableCars[] = $row[0];
+                $availableCars[] = $row['car_id'];
             }
         }
 
@@ -60,12 +60,12 @@ class Order
                 OR (order_details.pickup_location_id = '$dropoff_location_id' AND order_details.pickup_date > '$dropoff_date'));";
 
         $result2 = mysqli_query($this->dbc, $query2);
-        var_dump($result2);
+        
         if($result2)
         {
-            while($row = mysqli_fetch_row($result2))
+            while($row = mysqli_fetch_assoc($result2))
             {
-                $availableCarsTemp[] = $row[0];
+                $availableCarsTemp[] = $row['car_id'];
             }
         }
 
@@ -84,9 +84,9 @@ class Order
 
         if($result3)
         {
-            while($row = mysqli_fetch_row($result3))
+            while($row = mysqli_fetch_assoc($result3))
             {
-                $unavailableCars[] = $row[0];
+                $unavailableCars[] = $row['car_id'];
             }
         }
 
