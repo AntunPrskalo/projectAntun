@@ -2,18 +2,61 @@
 
 class RezervacijaController
 {
+
+    protected $dbc;
+    protected $order;
+
+    public function __construct()
+    {
+        require_once('models/dbc_model.php'); 
+        $this->dbc = DBConnection::getMysqli();
+
+        require_once('models/order_model.php');
+        $this->order = new Order($this->dbc);
+    }
+
     public function index()
     {
-        require_once('views/forms.php');
-        $form = new Form();
-        $formView = $form->generateSearchFrom();
+        if(!isset($_POST['pickup_location_id']))
+        {
+            $pickup_location_id = '1';
+            $pickup_date = date("Y/m/d");
+            $pickup_time = "09:00";
+            $dropoff_location_id = '1';
+            $dropoff_date = date("Y/m/d");
+            $dropoff_time = "22:00";           
+        }
+        else
+        {
+            $pickup_location_id = $_POST['pickup_location_id'];
+            $pickup_date = $_POST['pickup_date'];
+            $pickup_time = $_POST['pickup_time'];
+            $dropoff_location_id = $_POST['dropoff_location_id'];
+            $dropoff_date = $_POST['dropoff_date'];
+            $dropoff_time = $_POST['dropoff_time'];
+        }
+        var_dump($_POST);
+        $condition = "";
 
+        $availableCars1 = $this->order->availableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+        $availableCars2 = $this->order->availableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+
+        $availableCars = array_merge($availableCars1, $availableCars2);
+
+        if(!empty($availableCars))
+        {
+            $data = $this->order->carsById($availableCars);
+
+            require_once('views/forms.php');
+            $form = new Form();
+            $formView = $form->generateReservationFrom($data);
+        }
         return $formView;
     }
 
-    public function pretrazi()
+    public function potvrdi1()
     {
-        if(isset($_POST['searchSubmit']))
+        if(isset($_POST['reservationSubmit']))
         {
             require_once('models/dbc_model.php'); 
             $dbc = DBConnection::getMysqli();
