@@ -2,30 +2,40 @@
 
 class Form
 {
-    public function generateReservationFrom($data)
+    public function generateReservationFrom($data,  $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time)
     {
-        $view .= "<script src='views/js/reservationInfoForm.js'></script>"; // js skripte
-
+        
         $view = "<form id = 'reservationForm' action='' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
 
-        $view .= "<tr> <th colspan = '3'>PRETRAGA VOZILA</th> </tr>"; // naslov
+        $view .= "<tr> <th colspan = '3'>REZERVACIJA VOZILA</th> </tr>"; // naslov
 
         $view .= $this->reservationInfoForm();
 
         $view .= "<tr> <td><span>Odaberite vozilo:</span></td>"; // odabir vozila
-        $view .= "<td> <select name = 'model_id'>";
 
-        foreach($data as $key=>$value)
+        if(!empty($data))
         {
-            $view .= "<option value = '" . $key . "'>" . $value['brand'] . " " .  $value['model'] . "</option>";  
+            $view .= "<td> <select name = 'model_id'>";
+
+            foreach($data as $key=>$value)
+            {
+                $view .= "<option value = '" . $key . "'>" . $value['brand'] . " " .  $value['model'] . "</option>";  
+            }
+
+            $view .= "</select>"; 
+        }
+        else
+        {
+            $view .= "<td> <span> Nema dostupnih vozila </span>"; 
         }
 
-        $view .= "</select>";
         $view .= "</td></tr>";
 
         $view .= "<tr> <td> <input type = 'submit' name = 'searchSubmit' value = 'REZERVIRAJ'> </td> </tr>"; // submit button
 
         $view .= "</table></form>"; // zatvori form, table
+
+        $view .= $this->jsAutoUpdate($pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time); // js skripta
 
         return $view; 
 
@@ -84,7 +94,7 @@ HTML;
                     <tr>
                         <td><span>Mjesto preuzimanja:</span></td>
                         <td>
-                            <select name = 'pickup_location_id' onchange = 'form_submit()'>
+                            <select id = 'pickup_location_id' name = 'pickup_location_id' onchange = 'form_submit()'>
                                 <option value='1'>Mostar</option>
                                 <option value='2'>Sarajevo</option>
                                 <option value='3'>Split</option>
@@ -96,14 +106,14 @@ HTML;
                     </tr>
                     <tr>
                         <td><span>Datum preuzimanja:</span></td>
-                        <td><input type='date' id = 'pickup_date' name = 'pickup_date' value = ''></td>
+                        <td><input type='date' id = 'pickup_date' name = 'pickup_date' value = '' onchange = 'form_submit()'></td>
                         <td><span>Vrijeme prezimanja:</span></td>
-                        <td><input type='time' id = 'pickup_time' name = 'pickup_time' value = ''></td>
+                        <td><input type='time' id = 'pickup_time' name = 'pickup_time' value = '' onchange = 'form_submit()'></td>
                     </tr>
                     <tr>
                         <td><span>Mjesto povrata:</span></td>
                         <td>
-                            <select name = 'dropoff_location_id' onchange = 'form_submit()'>
+                            <select id = 'dropoff_location_id' name = 'dropoff_location_id' onchange = 'form_submit()'>
                                 <option value='1'>Mostar</option>
                                 <option value='2'>Sarajevo</option>
                                 <option value='3'>Split</option>
@@ -115,9 +125,9 @@ HTML;
                     </tr>
                     <tr>
                         <td><span>Datum povrata:</span></td>
-                        <td><input type='date' id = 'dropoff_date' name = 'dropoff_date' value = ''></td>
+                        <td><input type='date' id = 'dropoff_date' name = 'dropoff_date' value = '' onchange = 'form_submit()'></td>
                         <td><span>Vrijeme povrata:</span></td>
-                        <td><input type='time' id = 'dropoff_time' name = 'dropoff_time' value = ''></td>
+                        <td><input type='time' id = 'dropoff_time' name = 'dropoff_time' value = '' onchange = 'form_submit()'></td>
 HTML;
 
         return $view;       
@@ -138,6 +148,36 @@ HTML;
 HTML;
 
         return $view;        
+    }
+
+    public function jsAutoUpdate($pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time)
+    {
+
+        $pickup_location_index = $pickup_location_id - 1;
+        $dropoff_location_index = $dropoff_location_id - 1;
+
+        $view = "<script>
+                    function formValues()
+                    {
+                        document.getElementById('pickup_date').defaultValue = '$pickup_date';
+                        document.getElementById('dropoff_date').defaultValue = '$dropoff_date';
+
+                        document.getElementById('pickup_time').defaultValue = '$pickup_time';
+                        document.getElementById('dropoff_time').defaultValue = '$dropoff_time';
+
+                        document.getElementById('pickup_location_id').selectedIndex = '$pickup_location_index';
+                        document.getElementById('dropoff_location_id').selectedIndex = '$dropoff_location_index';        
+                    }
+                      
+                    function form_submit()
+                    {
+                        document.getElementById('reservationForm').submit();    
+                    }
+
+                    window.onload = formValues();
+                </script>";
+
+                return $view;
     }
 }
 

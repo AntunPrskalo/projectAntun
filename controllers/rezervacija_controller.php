@@ -20,10 +20,10 @@ class RezervacijaController
         if(!isset($_POST['pickup_location_id']))
         {
             $pickup_location_id = '1';
-            $pickup_date = date("Y/m/d");
+            $pickup_date = date("Y-m-d");
             $pickup_time = "09:00";
             $dropoff_location_id = '1';
-            $dropoff_date = date("Y/m/d");
+            $dropoff_date = date("Y-m-d");
             $dropoff_time = "22:00";           
         }
         else
@@ -46,11 +46,16 @@ class RezervacijaController
         if(!empty($availableCars))
         {
             $data = $this->order->carsById($availableCars);
-
-            require_once('views/forms.php');
-            $form = new Form();
-            $formView = $form->generateReservationFrom($data);
         }
+        else
+        {
+            $data = array();
+        }
+
+        require_once('views/forms.php');
+        $form = new Form();
+        $formView = $form->generateReservationFrom($data,  $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time);
+
         return $formView;
     }
 
