@@ -46,6 +46,7 @@ class RezervacijaController
         if(!empty($availableCars))
         {
             $data = $this->order->carsById($availableCars);
+            var_dump($data);
         }
         else
         {

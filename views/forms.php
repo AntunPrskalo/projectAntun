@@ -15,27 +15,37 @@ class Form
 
         if(!empty($data))
         {
-            $view .= "<td> <select name = 'model_id'>";
+            $prices = array();
+
+            $view .= "<td> <select id = 'model_id_select' name = 'model_id' onchange = 'getPrice()' >";
 
             foreach($data as $key=>$value)
             {
-                $view .= "<option value = '" . $key . "'>" . $value['brand'] . " " .  $value['model'] . "</option>";  
+                $view .= "<option value = '" . $key . "'>" . $value['brand'] . " " .  $value['model'] . "</option>";
+                $prices[$key] = $value['price'];
+                var_dump($prices);
             }
 
-            $view .= "</select>"; 
+            $view .= "</select> </td>";
+
+            $view .= "<td> Cijena: </td>";
+
+            $view .= "<td> <span id = 'price'> </span>" . ",00 KM/dan";  
         }
         else
         {
-            $view .= "<td> <span> Nema dostupnih vozila </span>"; 
+            $view .= "<td> <span> Nema dostupnih vozila </span> </td>"; 
         }
 
-        $view .= "</td></tr>";
+        $view .= "</tr>";
+
+        $view .= $this->paymentInfoForm();
 
         $view .= "<tr> <td> <input type = 'submit' name = 'searchSubmit' value = 'REZERVIRAJ'> </td> </tr>"; // submit button
 
         $view .= "</table></form>"; // zatvori form, table
 
-        $view .= $this->jsAutoUpdate($pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time); // js skripta
+        $view .= $this->jsAutoUpdate($prices, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time); // js skripta
 
         return $view; 
 
@@ -150,9 +160,8 @@ HTML;
         return $view;        
     }
 
-    public function jsAutoUpdate($pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time)
+    public function jsAutoUpdate($prices, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time)
     {
-
         $pickup_location_index = $pickup_location_id - 1;
         $dropoff_location_index = $dropoff_location_id - 1;
 
@@ -166,15 +175,36 @@ HTML;
                         document.getElementById('dropoff_time').defaultValue = '$dropoff_time';
 
                         document.getElementById('pickup_location_id').selectedIndex = '$pickup_location_index';
-                        document.getElementById('dropoff_location_id').selectedIndex = '$dropoff_location_index';        
+                        document.getElementById('dropoff_location_id').selectedIndex = '$dropoff_location_index';
+
                     }
-                      
+
                     function form_submit()
                     {
                         document.getElementById('reservationForm').submit();    
                     }
 
                     window.onload = formValues();
+                    window.onload = getPrice();
+                    
+                    function getPrice()
+                    {
+                        var prices = {};";
+
+                foreach($prices as $key=>$value)
+                {
+                    $view .= "prices[" . $key . "] = " . $value . ";";     
+                }
+            $view .=   "var sel = document.getElementById('model_id_select');
+                        var x = document.getElementById('model_id_select').selectedIndex;
+                        console.log('');
+                        console.log(x);
+                        var index =  sel.options[x].value;
+                        console.log(index);
+                        document.getElementById('price').innerHTML =  prices[index];
+                    };
+
+                    window.onload = getPrice(); 
                 </script>";
 
                 return $view;

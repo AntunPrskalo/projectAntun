@@ -136,7 +136,7 @@ class Order
     {
         $str = implode(", ", $availableCars);
 
-        $query = "SELECT models.model_id, models.brand, models.model, COUNT(*)
+        $query = "SELECT models.model_id, models.brand, models.model, models.price
                   FROM cars
                   INNER JOIN models ON cars.model_id = models.model_id
                   WHERE car_id IN ($str)
@@ -150,7 +150,7 @@ class Order
 
             while($row = mysqli_fetch_row($result))
             {
-                $data[$row[0]] = array('brand' => $row[1], 'model' => $row[2]);    
+                $data[$row[0]] = array('brand' => $row[1], 'model' => $row[2], 'price' => $row[3]);    
             }
         }
         return $data;
