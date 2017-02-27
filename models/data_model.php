@@ -1,6 +1,6 @@
 <?php
 
-class JsonModel
+class DataModel
 {
     public $dbc;
 
@@ -9,9 +9,9 @@ class JsonModel
         $this->dbc = $dbc;
     }   
 
-    public function  all()
+    public function  allModels()
     {
-        $query = "SELECT * FROM models;"; 
+        $query = "SELECT * FROM 'models;"; 
 
         $result = mysqli_query($this->dbc, $query);
 
@@ -29,7 +29,8 @@ class JsonModel
             }
         }
         
-        $data = json_encode($data, JSON_PRETTY_PRINT);
+        $json = '"models" : ';
+        $json .= json_encode($data, JSON_PRETTY_PRINT);
 
         return $data;
     }   

@@ -3,8 +3,7 @@ RewriteEngine On
 
 RewriteBase /projectAntun/
 
-RewriteCond %{REQUEST_FILENAME} !-/models/
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
-RewriteRule ^(.+)$ index.php?url=$1
+RewriteRule ^(.+)$ index.php?request=$1 [QSA,NC,L]

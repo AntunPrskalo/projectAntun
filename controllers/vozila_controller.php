@@ -2,24 +2,37 @@
 
 class VozilaController
 {
+    protected $dbc;
+    protected $dataModel;
+    protected $jsonView;
+
     public function __construct()
     {
-        require_once('models/json_model.php');
-        require_once('models/dbc_model.php');  
+        require_once('models/dbc_model.php');
+        $dbc = DbConnection::getMysqli();
+
+        require_once('models/data_model.php');
+        $this->dataModel = new DataModel($dbc);
+
     }
 
     public function index()
     {
-        $dbc = DbConnection::getMysqli();
+        echo "linkovi";
+    }
 
-        $jsonModel = new JsonModel($dbc);
-        $data = $jsonModel->all();
+    public function svi_modeli()
+    {
+        $json = $DataModel->allModels();
+        
+        return $json;
+    }
 
-        require('views/json_view.php');
-        $jsonView = new jsonView($data);
-        $view = $jsonView->generateView('models');
+    public function sva_auta()
+    {
+        $json = $DataModel->allCars();
  
-        return $view;
+        return $json;
     }
 }
 

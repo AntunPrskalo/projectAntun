@@ -2,84 +2,82 @@
 
 class FrontController
 {
-    protected $header = 'main';
-    protected $footer = 'main';
-
-    protected $controller = 'home';
+    protected $httpMethod = 'GET';
+    protected $controller = 'links';
     protected $method = 'index';
-    protected $parameters = array();
+    protected $params = array();
 
-    protected $view;
+    protected $request;
+    protected $response;
 
-
-    protected function parseUrl() 
+    public function __construct($request) 
     {
-        if(isset($_GET['url'])) 
-        {
-            $url = trim($_GET['url'], '/');
-            $url = filter_var($url, FILTER_SANITIZE_URL);
-            $url = explode('/', $url);
+        $this->request = $request; // request
 
-            return $url;
-        }    
-    }
+        $request = trim($request, '/');
+        $request = filter_var($request, FILTER_SANITIZE_URL);
+        $request = explode('/', $request); 
 
-    public function __construct() 
-    {
-        $url = $this->parseUrl();
-        
-        if(file_exists('controllers/' . $url[0] . '_controller.php')) 
+        unset($request[0]);
+        $request = array_values($request);
+
+        if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
         {
-            $this->controller = $url[0];
-            unset($url[0]);
+            $this->controller = array_shift($request); // controller
+            require_once('controllers/' . $this->controller . '_controller.php');
+            $class = $this->controller . "Controller";
+            $this->controller = new $class;
+
+        } 
+
+        if(array_key_exists(0, $request) && method_exists($this->controller, $request[0]))
+        {
+            $this->method = array_shift($this->params); // method
         }
-   
-        require_once('controllers/' . $this->controller . '_controller.php');
-        $class = $this->controller . "Controller";
-        $this->controller = new $class;
-        
-        if(isset($url[1])) 
+
+        if($request)
         {
-            if(method_exists($this->controller, $url[1])) 
+            $this->params = $request; // parametri
+        }
+        else
+        {
+            $this->params = array();
+        }
+
+        $this->httpMethod = $_SERVER['REQUEST_METHOD']; // HTTP method
+
+        if($this->method == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER))
+        {
+            if($_SERVER['HTTP_X_HTTP_METHOD'] == 'DELETE')
             {
-                $this->method = $url[1];
-                unset($url[1]);
+                $this->method = 'DELETE';
+            }
+            elseif($_SERVER['HTTP_X_HTTP_METHOD'] == 'PUT')
+            {
+                $this->method = 'PUT';
+            }
+            else
+            {
+                // header error
             }
         }
-
-        if($url) 
-        {
-            $this->parameters = array_values($url);
-    
-        }
-        else 
-        {
-            $this->parameters = array();
-        }
-
-        $this->view = call_user_func_array([$this->controller, $this->method], $this->parameters);
     }
 
-    protected function getHeader() 
+    public function executeAPI()
     {
-        require('controllers/header_controller.php');
-        $headerController = new HeaderController();
-        $header = $headerController->mainHeader();
-        return $header;   
+        $json = call_user_func_array([$this->controller, $this->method], $this->params);
+
+        return $json;
     }
 
-    protected function getFooter()
+    public function dump()
     {
-        require('controllers/footer_controller.php');
-        $footerController = new FooterController();
-        $footer = $footerController->mainFooter();
-        return $footer;    
-    } 
-
-    public function getView()
-    {
-        echo $this->view;
-    }      
+        var_dump($this->httpMethod);
+        var_dump($this->controller);
+        var_dump($this->method);
+        var_dump($this->params);
+        var_dump($_GET);
+    }
 }
 
 ?>
