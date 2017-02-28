@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 20, 2017 at 05:43 PM
+-- Generation Time: Feb 23, 2017 at 09:10 AM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -88,20 +88,6 @@ INSERT INTO `car_class` (`class_id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customers`
---
-
-CREATE TABLE `customers` (
-  `customer_id` int(11) NOT NULL,
-  `first_name` varchar(255) NOT NULL DEFAULT '''''',
-  `last_name` varchar(255) NOT NULL DEFAULT '''''',
-  `phone` varchar(255) NOT NULL DEFAULT '''''',
-  `email` varchar(255) NOT NULL DEFAULT ''''''
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `locations`
 --
 
@@ -160,11 +146,20 @@ INSERT INTO `models` (`model_id`, `brand`, `model`, `transmission`, `air_conditi
 
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `car_id` int(11) NOT NULL,
   `order_date` date NOT NULL,
   `order_time` time NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `user_id`, `car_id`, `order_date`, `order_time`) VALUES
+(52, 4, 3, '2017-02-23', '10:02:35'),
+(53, 4, 1, '2017-02-23', '10:02:44'),
+(54, 4, 2, '2017-02-23', '10:02:50');
 
 -- --------------------------------------------------------
 
@@ -182,6 +177,15 @@ CREATE TABLE `order_details` (
   `dropoff_date` date NOT NULL,
   `dropoff_time` time NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `order_details`
+--
+
+INSERT INTO `order_details` (`order_id`, `payment_type_id`, `pickup_location_id`, `pickup_date`, `pickup_time`, `dropoff_location_id`, `dropoff_date`, `dropoff_time`) VALUES
+(52, 1, 1, '1111-11-11', '11:11:00', 1, '1111-11-11', '11:11:00'),
+(53, 1, 1, '1111-11-11', '11:11:00', 1, '1111-11-11', '11:11:00'),
+(54, 1, 1, '1111-11-11', '11:11:00', 1, '1111-11-11', '11:11:00');
 
 -- --------------------------------------------------------
 
@@ -215,8 +219,21 @@ CREATE TABLE `users` (
   `first_name` varchar(255) NOT NULL DEFAULT '''''',
   `last_name` varchar(255) NOT NULL DEFAULT '''''',
   `phone` varchar(255) NOT NULL DEFAULT '''''',
-  `email` varchar(255) NOT NULL DEFAULT ''''''
+  `city` varchar(255) NOT NULL DEFAULT '''''',
+  `country` varchar(255) NOT NULL DEFAULT '''''',
+  `address` varchar(255) NOT NULL DEFAULT '''''',
+  `email` varchar(255) NOT NULL DEFAULT '''''',
+  `salt` varchar(255) NOT NULL,
+  `user_key` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `password`, `first_name`, `last_name`, `phone`, `city`, `country`, `address`, `email`, `salt`, `user_key`) VALUES
+(4, 'Antun', 'a86c2d95062f713d1e942eae802eebeddec338e55a34b74f6a1f2c04376b3580', 'Antun', 'Prskalo', '063428373', 'Mostar', 'BiH', 'BlajburÅ¡kih Å¾rtava, 21A', 'antun8-8@hotmail.com', 'dc6607290cedefc4201217076e6fdfa78c121b9f4959dede6136ce8346fb4fbc', '93568f6c7317173be89773a34af84fd6c5bbfbc1510a3899b5321b7606165301'),
+(5, 'Dajana', '7ff731f9332151261964346a649af0026e36db2ea83d0985ad1139a3a3266f10', 'Dajana', 'Pujic', '063 428 373', 'Mostar', 'BiH', 'BlajburÅ¡kih Å¾rtava, 21A', 'dajanapujic@rocketmail.com', '8de80589e843effcc3b4fcc2c7d77bfb81418ac17d3bba8934e8c5f4f0ecc2d4', '0f5862a8c3af585bb1ec877373dd06f31c568c154d3a1baa1aa7baff59fad23f');
 
 --
 -- Indexes for dumped tables
@@ -233,12 +250,6 @@ ALTER TABLE `cars`
 --
 ALTER TABLE `car_class`
   ADD PRIMARY KEY (`class_id`);
-
---
--- Indexes for table `customers`
---
-ALTER TABLE `customers`
-  ADD PRIMARY KEY (`customer_id`);
 
 --
 -- Indexes for table `locations`
@@ -291,11 +302,6 @@ ALTER TABLE `cars`
 ALTER TABLE `car_class`
   MODIFY `class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
--- AUTO_INCREMENT for table `customers`
---
-ALTER TABLE `customers`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
---
 -- AUTO_INCREMENT for table `locations`
 --
 ALTER TABLE `locations`
@@ -309,7 +315,7 @@ ALTER TABLE `models`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 --
 -- AUTO_INCREMENT for table `payment_type`
 --
@@ -319,7 +325,7 @@ ALTER TABLE `payment_type`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
