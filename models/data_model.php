@@ -12,6 +12,7 @@ class DataModel
     public function getData($query, $id)
     {
     $result = mysqli_query($this->dbc, $query);
+    var_dump($result);
 
         if($result)
         {
@@ -19,6 +20,7 @@ class DataModel
 
             while($row = mysqli_fetch_assoc($result))
             {
+                var_Dump($row);
                 foreach($row as $key=>$value)
                 {
                     $arr[$key] = $value;
@@ -44,10 +46,11 @@ class DataModel
     public function  allCars()
     {
         $query = "SELECT * FROM cars
-                  INNER JOIN models ON cars.model_id = models_model_id
-                  INNER JOIN locations;"; 
+                  INNER JOIN models ON cars.model_id = models.model_id
+                  INNER JOIN car_class ON cars.class_id = car_class.class_id
+                  INNER JOIN locations ON cars.location_id = locations.location_id;"; 
 
-        $json = $this->getData($query, 'car_id');
+        $data = $this->getData($query, 'car_id');
 
         $json = '"cars" : ';
         $json .= json_encode($data, JSON_PRETTY_PRINT);
