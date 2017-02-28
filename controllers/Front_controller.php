@@ -3,7 +3,7 @@
 class FrontController
 {
     protected $httpMethod = 'GET';
-    protected $controller = 'links';
+    protected $controller = 'index';
     protected $method = 'index';
     protected $params = array();
 
@@ -24,7 +24,10 @@ class FrontController
         if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
         {
             $this->controller = array_shift($request); // controller
+
+            require_once('controllers/abs_controller.php');
             require_once('controllers/' . $this->controller . '_controller.php');
+            
             $class = $this->controller . "Controller";
             $this->controller = new $class;
 

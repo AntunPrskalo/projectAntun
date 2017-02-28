@@ -1,0 +1,59 @@
+<?php
+
+class Order
+{
+    public function availableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
+    {
+        $availableCarsTemp = array();
+        $unavailableCars = array();
+
+        // Auta koja SU rezervirana ali se vremena rezervacije NE PREKLAPAJU
+        $query2 = "SELECT DISTINCT cars.car_id FROM orders
+                INNER JOIN order_details
+                ON orders.order_id = order_details.order_id
+                INNER JOIN cars
+                ON orders.car_id = cars.car_id
+                INNER JOIN models
+                ON models.model_id = cars.model_id
+                WHERE $condition ((order_details.dropoff_location_id = '$pickup_location_id' AND order_details.dropoff_date < '$pickup_date')
+                OR (order_details.pickup_location_id = '$dropoff_location_id' AND order_details.pickup_date > '$dropoff_date'));";
+
+        $result2 = mysqli_query($dataModel->dbc, $query2);
+        
+        if($result2)
+        {
+            while($row = mysqli_fetch_assoc($result2))
+            {
+                $availableCarsTemp[] = $row['car_id'];
+            }
+        }
+
+        // Auta koja SU rezervirana ali se vremena rezervacije PREKLAPAJU
+        $query3 = "SELECT DISTINCT cars.car_id FROM orders
+                INNER JOIN order_details
+                ON orders.order_id = order_details.order_id
+                INNER JOIN cars
+                ON orders.car_id = cars.car_id
+                INNER JOIN models
+                ON models.model_id = cars.model_id
+                WHERE $condition !((order_details.dropoff_location_id = '$pickup_location_id' AND order_details.dropoff_date < '$pickup_date')
+                OR (order_details.pickup_location_id = '$dropoff_location_id' AND order_details.pickup_date > '$dropoff_date'));";
+
+        $result3 = mysqli_query($dataModel->dbc, $query3);
+
+        if($result3)
+        {
+            while($row = mysqli_fetch_assoc($result3))
+            {
+                $unavailableCars[] = $row['car_id'];
+            }
+        }
+
+        $availableCars = array_diff($availableCarsTemp, $unavailableCars);
+    
+
+        return $availableCars;    
+    }
+}
+
+?>

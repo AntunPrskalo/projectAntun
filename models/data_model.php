@@ -12,7 +12,6 @@ class DataModel
     public function getData($query, $id)
     {
     $result = mysqli_query($this->dbc, $query);
-    var_dump($result);
 
         if($result)
         {
@@ -20,7 +19,6 @@ class DataModel
 
             while($row = mysqli_fetch_assoc($result))
             {
-                var_Dump($row);
                 foreach($row as $key=>$value)
                 {
                     $arr[$key] = $value;
