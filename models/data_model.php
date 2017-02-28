@@ -9,11 +9,9 @@ class DataModel
         $this->dbc = $dbc;
     }   
 
-    public function  allModels()
+    public function getData($query, $id)
     {
-        $query = "SELECT * FROM 'models;"; 
-
-        $result = mysqli_query($this->dbc, $query);
+    $result = mysqli_query($this->dbc, $query);
 
         if($result)
         {
@@ -25,15 +23,37 @@ class DataModel
                 {
                     $arr[$key] = $value;
                 }
-                $data[$row['model_id']] = $arr;
+                $data[$row[$id]] = $arr;
             }
         }
         
+        return $data;
+    }
+    public function  allModels()
+    {
+        $query = "SELECT * FROM models;"; 
+
+        $data = $this->getData($query, 'model_id');
+
         $json = '"models" : ';
         $json .= json_encode($data, JSON_PRETTY_PRINT);
 
-        return $data;
-    }   
+        return $json;
+    }
+
+    public function  allCars()
+    {
+        $query = "SELECT * FROM cars
+                  INNER JOIN models ON cars.model_id = models_model_id
+                  INNER JOIN locations;"; 
+
+        $json = $this->getData($query, 'car_id');
+
+        $json = '"cars" : ';
+        $json .= json_encode($data, JSON_PRETTY_PRINT);
+
+        return $json;
+    }    
 }
 
 ?>

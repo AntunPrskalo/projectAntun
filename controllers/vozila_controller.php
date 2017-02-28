@@ -18,19 +18,35 @@ class VozilaController
 
     public function index()
     {
-        echo "linkovi";
+        $methods = get_class_methods('VozilaController');
+
+        $view = "<table>";
+
+        foreach($methods as $method)
+        {
+            if($method != 'index' && $method != '__construct')
+            {
+                $view .= "<tr>";
+                    $view .= "<td> <a href = '/projectantun/vozila/$method'> vozila/$method </a> </td>";
+                $view .= "</tr>";
+            }
+        }
+
+        $view .= "</table>";
+
+        return $view;     
     }
 
     public function svi_modeli()
     {
-        $json = $DataModel->allModels();
+        $json = $this->dataModel->allModels();
         
         return $json;
     }
 
     public function sva_auta()
     {
-        $json = $DataModel->allCars();
+        $json = $this->dataModel->allCars();
  
         return $json;
     }

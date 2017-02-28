@@ -32,7 +32,7 @@ class FrontController
 
         if(array_key_exists(0, $request) && method_exists($this->controller, $request[0]))
         {
-            $this->method = array_shift($this->params); // method
+            $this->method = array_shift($request); // method
         }
 
         if($request)
@@ -46,15 +46,15 @@ class FrontController
 
         $this->httpMethod = $_SERVER['REQUEST_METHOD']; // HTTP method
 
-        if($this->method == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER))
+        if($this->httpMethod == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER))
         {
             if($_SERVER['HTTP_X_HTTP_METHOD'] == 'DELETE')
             {
-                $this->method = 'DELETE';
+                $this->httpMethod = 'DELETE';
             }
             elseif($_SERVER['HTTP_X_HTTP_METHOD'] == 'PUT')
             {
-                $this->method = 'PUT';
+                $this->httpMethod = 'PUT';
             }
             else
             {
