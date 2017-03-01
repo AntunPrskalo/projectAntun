@@ -85,39 +85,6 @@ class Order
 
         return $availableCars;    
     }
-
-    public function book($dbc, $availableCars, $model_id, $parameters)
-    {
-        $pickup_location_id = $parameters['pickup_location_id'];
-        $pickup_date = $parameters['pickup_date'];
-        $pickup_time = $parameters['pickup_time'];
-
-        $dropoff_location_id = $parameters['dropoff_location_id'];
-        $dropoff_date = $parameters['dropoff_date'];
-        $dropoff_date = $parameters['dropoff_time'];
-
-        $i = array_rand($availableCars);
-        $car_id = $availableCars[$i];
-
-        echo "Dostupna auta";
-        var_dump($availableCars);
-        echo "Odabrano auto $car_id";
-        
-        list($user_id, $hash) = explode(',', $_COOKIE['login']);
-      
-        $query1 = "INSERT INTO `orders`(`user_id`, `car_id`, `order_date`, `order_time`) 
-                   VALUES ('$user_id', '$car_id', NOW(), NOW());";
-        
-        $result = mysqli_query($dbc, $query1);
-        $order_id = mysqli_insert_id($dbc);
-
-        $query2 = "INSERT INTO `order_details`(`order_id`, `payment_type_id`, `pickup_location_id`, `pickup_date`, `pickup_time`, `dropoff_location_id`, `dropoff_date`, `dropoff_time`) 
-                   VALUES ('$order_id', '$payment_type_id', '$pickup_location_id', '$pickup_date', '$pickup_time', '$dropoff_location_id', '$dropoff_date', '$dropoff_time');";
-        
-        $result = mysqli_query($this->dbc, $query2);
-
-        return $result;
-    }
 }
 
 ?>
