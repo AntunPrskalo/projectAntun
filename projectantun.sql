@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2017 at 10:03 PM
+-- Generation Time: Mar 01, 2017 at 12:20 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -210,13 +210,20 @@ INSERT INTO `payment_type` (`payment_type_id`, `name`) VALUES
 
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
-  `username` varchar(255) NOT NULL DEFAULT '''''',
-  `password` varchar(255) NOT NULL DEFAULT '''''',
   `first_name` varchar(255) NOT NULL DEFAULT '''''',
   `last_name` varchar(255) NOT NULL DEFAULT '''''',
   `phone` varchar(255) NOT NULL DEFAULT '''''',
-  `email` varchar(255) NOT NULL DEFAULT ''''''
+  `email` varchar(255) NOT NULL DEFAULT '''''',
+  `user_ip` varchar(255) NOT NULL,
+  `user_key` varchar(255) NOT NULL DEFAULT ''''''
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `phone`, `email`, `user_ip`, `user_key`) VALUES
+(23, '\'\'', '\'\'', '\'\'', '\'\'', '::1', 'bffdec73cc6131d74e19987ecf2bf7777019079de384b9414f70b4cf62d53871');
 
 --
 -- Indexes for dumped tables
@@ -319,7 +326,7 @@ ALTER TABLE `payment_type`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
