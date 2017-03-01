@@ -4,52 +4,52 @@ class RezervacijaController extends Abs
 {
     protected $order;
 
-    public function __construct()
+    public function __construct($httpMethod)
     {
-        parent::__construct();
+        parent::__construct($httpMethod);
         
         require_once('models/order_model.php');
         $this->order = new Order();
     }
 
-    public function vozilo()
+    public function vozilo($parameters)
     {
+        $condition = "models.model = '$model' AND";
 
+        $availableCars = $order->availableCars($condition, $parameters);
+
+        if(empty($availableCars))
+        {
+            $availableCars = $order->availableReservedCars($condition, $parameters);    
+        }
+
+        if(!empty($availableCars))
+        {
+            $json = $order->book($availableCars, $parameters);
+        }
+
+        return $json;
     }
 
-    public function slobodna_vozila($pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
+    public function slobodna_vozila($parameters)
     {
-        echo "in";
-        if($this->httpMethod == 'POST')
-        {
-            $pickup_location_id = $_POST['pickup_location_id'];
-            $pickup_date = $_POST['pickup_date'];
-
-            $dropoff_location_id = $_POST['dropoff_location_id'];
-            $dropoff_date = $_POST['dropoff_date'];
-        }
-        else
-        {
-            // error message
-        }
-
         $condition = "";
 
-        $availableCars1 = $this->order->availableCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
-        $availableCars2 = $this->order->availableReservedCars($condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+        $availableCars1 = $this->order->availableCars($this->dataModel->dbc, $parameters);
+        $availableCars2 = $this->order->availableReservedCars($this->dataModel->dbc, $parameters);
 
         $availableCars = array_merge($availableCars1, $availableCars2);
 
         if(!empty($availableCars))
         {
-            $data = $this->order->carsById($availableCars);
+            $json = $this->dataModel->carsById($availableCars);
         }
         else
         {
             // no avalible cars message
         }
 
-        var_dump($data);
+        return $json;
     }
 }
 

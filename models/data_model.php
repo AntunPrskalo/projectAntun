@@ -54,6 +54,34 @@ class DataModel
         $json .= json_encode($data, JSON_PRETTY_PRINT);
 
         return $json;
+    }
+
+    public function  carsById($availableCars)
+    {
+        $str = implode(", ", $availableCars);
+
+        $query = "SELECT models.model_id, models.brand, models.model, models.price
+                  FROM cars
+                  INNER JOIN models ON cars.model_id = models.model_id
+                  WHERE car_id IN ($str)
+                  GROUP BY model_id;"; 
+
+        $result = mysqli_query($this->dbc, $query);
+
+        if($result)
+        {
+            $data = [];
+
+            while($row = mysqli_fetch_row($result))
+            {
+                $data[$row[0]] = array('brand' => $row[1], 'model' => $row[2], 'price' => $row[3]);    
+            }
+        }
+
+        $json = '"availible cars" : ';
+        $json .= json_encode($data, JSON_PRETTY_PRINT);
+
+        return $json;
     }    
 }
 

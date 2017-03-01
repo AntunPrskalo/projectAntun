@@ -12,41 +12,6 @@ class FrontController
 
     public function __construct($request) 
     {
-        $this->request = $request; // request
-
-        $request = trim($request, '/');
-        $request = filter_var($request, FILTER_SANITIZE_URL);
-        $request = explode('/', $request); 
-
-        unset($request[0]);
-        $request = array_values($request);
-
-        if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
-        {
-            $this->controller = array_shift($request); // controller
-
-            require_once('controllers/abs_controller.php');
-            require_once('controllers/' . $this->controller . '_controller.php');
-            
-            $class = $this->controller . "Controller";
-            $this->controller = new $class;
-
-        } 
-
-        if(array_key_exists(0, $request) && method_exists($this->controller, $request[0]))
-        {
-            $this->method = array_shift($request); // method
-        }
-
-        if($request)
-        {
-            $this->params = $request; // parametri
-        }
-        else
-        {
-            $this->params = array();
-        }
-
         $this->httpMethod = $_SERVER['REQUEST_METHOD']; // HTTP method
 
         if($this->httpMethod == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER))
@@ -64,6 +29,41 @@ class FrontController
                 // header error
             }
         }
+
+        $this->request = $request; // request
+
+        $request = trim($request, '/');
+        $request = filter_var($request, FILTER_SANITIZE_URL);
+        $request = explode('/', $request); 
+
+        unset($request[0]);
+        $request = array_values($request);
+
+        if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
+        {
+            $this->controller = array_shift($request); // controller
+
+            require_once('controllers/abs_controller.php');
+            require_once('controllers/' . $this->controller . '_controller.php');
+            
+            $class = $this->controller . "Controller";
+            $this->controller = new $class($this->httpMethod);
+
+        } 
+
+        if(array_key_exists(0, $request) && method_exists($this->controller, $request[0]))
+        {
+            $this->method = array_shift($request); // method
+        }
+
+        if($request)
+        {
+            $this->params = $request; // parametri
+        }
+        else
+        {
+            $this->params = array();
+        }
     }
 
     public function executeAPI()
@@ -80,6 +80,22 @@ class FrontController
         var_dump($this->method);
         var_dump($this->params);
         var_dump($_GET);
+    }
+
+    public function methodHandler()
+    {
+        if($this->httpMethod == 'PUT' && $this->controller != 'moje_rezervacije' && $this->method != 'uredi_rezervaciju')
+        {
+            // http error
+        }
+        if($this->httpMethod == 'DELETE' && $this->controller != 'moje_rezervacije' && $this->method != 'otkazi_rezervaciju')
+        {
+            // http error
+        }
+        if($this->httpMethod == 'POST')
+        {
+            $this->params = $_POST;
+        }
     }
 }
 
