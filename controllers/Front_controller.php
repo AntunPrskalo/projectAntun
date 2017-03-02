@@ -3,14 +3,14 @@
 class FrontController
 {
     protected $httpMethod = 'GET';
-    protected $controller = 'index';
+    protected $controller = 'vozila';
     protected $method = 'index';
     protected $params = array();
 
     protected $request;
     protected $response;
 
-    public function __construct($request) 
+    public function __construct($request, $userKey) 
     {
         $this->httpMethod = $_SERVER['REQUEST_METHOD']; // HTTP method
 
@@ -36,24 +36,30 @@ class FrontController
         $request = filter_var($request, FILTER_SANITIZE_URL);
         $request = explode('/', $request); 
 
-        unset($request[0]);
         $request = array_values($request);
 
         if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
         {
             $this->controller = array_shift($request); // controller
+        }
+        else
+        {
+            unset($request[0]);
+        }
 
-            require_once('controllers/abs_controller.php');
-            require_once('controllers/' . $this->controller . '_controller.php');
+        require_once('controllers/abs_controller.php');
+        require_once('controllers/' . $this->controller . '_controller.php');
             
-            $class = $this->controller . "Controller";
-            $this->controller = new $class($this->httpMethod);
-
-        } 
+        $class = $this->controller . "Controller";
+        $this->controller = new $class($this->httpMethod, $userKey);
 
         if(array_key_exists(0, $request) && method_exists($this->controller, $request[0]))
         {
             $this->method = array_shift($request); // method
+        }
+        else
+        {
+            unset($request[0]);
         }
 
         if($request)
@@ -64,37 +70,62 @@ class FrontController
         {
             $this->params = array();
         }
+        $this->methodHandler();
     }
 
     public function executeAPI()
     {
-        $json = call_user_func_array([$this->controller, $this->method], $this->params);
+        if($this->httpMethod =='GET')
+        {
+            var_dump($this->controller);
+            var_dump($this->method);
+            var_dump($this->params);
+            $json = call_user_func_array([$this->controller, $this->method], $this->params);    
+        }
+        elseif($this->httpMethod == 'POST')
+        {
+            $json = call_user_func([$this->controller, $this->method], $this->params); 
+        }
 
         return $json;
     }
 
-    public function dump()
-    {
-        var_dump($this->httpMethod);
-        var_dump($this->controller);
-        var_dump($this->method);
-        var_dump($this->params);
-        var_dump($_GET);
-    }
-
     public function methodHandler()
     {
-        if($this->httpMethod == 'PUT' && $this->controller != 'moje_rezervacije' && $this->method != 'uredi_rezervaciju')
+        if($this->httpMethod == 'PUT')
         {
-            // http error
+            if($this->controller == 'moje_rezervacije' && $this->method == 'uredi_rezervaciju')
+            {
+                // uredi put
+            }
+            else
+            {
+                // http error
+            }   
         }
-        if($this->httpMethod == 'DELETE' && $this->controller != 'moje_rezervacije' && $this->method != 'otkazi_rezervaciju')
+        if($this->httpMethod == 'DELETE')
         {
-            // http error
+            if($this->controller != 'moje_rezervacije' && $this->method != 'otkazi_rezervaciju')
+            {
+                // uredi delete
+            }
+            else
+            {
+                // http error
+            }    
         }
         if($this->httpMethod == 'POST')
-        {
-            $this->params = $_POST;
+        {     
+            if(get_class($this->controller) == 'RezervacijaController' && ($this->method == 'vozila' || $this->method == 'slobodna_vozila'))
+            {
+
+                var_dump($_POST);
+                $this->params = $_POST;
+            }
+            else
+            {
+                // http error
+            }
         }
     }
 }

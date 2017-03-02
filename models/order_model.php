@@ -27,14 +27,8 @@ class Order
         return $availableCars;
     }
 
-    public function availableReservedCars($dbc, $condition, $parameters)
+    public function availableReservedCars($dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
-        $pickup_location_id = $parameters['pickup_location_id'];
-        $pickup_date = $parameters['pickup_date'];
-
-        $dropoff_location_id = $parameters['dropoff_location_id'];
-        $dropoff_date = $parameters['dropoff_date'];
-
         $availableCarsTemp = array();
         $unavailableCars = array();
 

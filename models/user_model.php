@@ -49,49 +49,34 @@ class User
         }    
     }
 
-    public function validateKey($dbc)
+    public function validateKey($dbc, $UserKey)
     {
-        if(isset($_COOKIE['login']))
+        list($user_ip, $hash) = explode(',', $UserKey);
+
+        $query = "SELECT user_key FROM users WHERE user_ip = '$user_ip';";
+        $result = mysqli_query($dbc, $query);
+
+        if(mysqli_num_rows($result) == 1)
         {
-            list($user_ip, $hash) = explode(',', $_COOKIE['login']);
+            $row = mysqli_fetch_assoc($result);
+            $user_key = $row['user_key'];
 
-            $query = "SELECT user_key FROM users WHERE user_ip = '$user_ip';";
-            $result = mysqli_query($dbc, $query);
-  
-            if(mysqli_num_rows($result) == 1)
+            $key = md5($user_ip . $user_key);
+
+            if($key == $hash)
             {
-                $row = mysqli_fetch_assoc($result);
-                $user_key = $row['user_key'];
-
-                $key = md5($user_ip . $user_key);
-
-                if($key == $hash)
-                {
-                    echo "key validated true";
-                    return true;
-                }
-                else
-                {
-                    return false;
-                } 
+                echo "key validated true";
+                return true;
             }
             else
             {
                 return false;
-            }
+            } 
         }
     }
 
-    public function book($dbc, $availableCars, $model_id, $parameters)
+    public function book($dataModel, $availableCars, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time, $first_name, $last_name, $email, $payment_type_id)
     {
-        $pickup_location_id = $parameters['pickup_location_id'];
-        $pickup_date = $parameters['pickup_date'];
-        $pickup_time = $parameters['pickup_time'];
-
-        $dropoff_location_id = $parameters['dropoff_location_id'];
-        $dropoff_date = $parameters['dropoff_date'];
-        $dropoff_date = $parameters['dropoff_time'];
-
         $i = array_rand($availableCars);
         $car_id = $availableCars[$i];
 
@@ -99,20 +84,47 @@ class User
         var_dump($availableCars);
         echo "Odabrano auto $car_id";
         
-        list($user_id, $hash) = explode(',', $_COOKIE['login']);
+        list($user_ip, $hash) = explode(',', $_COOKIE['login']);
+
+        $query1 = "UPDATE `users` SET `first_name`='$first_name',`last_name`='$last_name', `email`='$email' WHERE user_ip = $user_ip;";
+
+        $result = mysqli_query($dataModel->dbc, $query1);
+        
+        $query2 = "SELECT `user_id` FROM `users` WHERE user_ip = '$user_ip';";
+
+        $result = mysqli_query($dataModel->dbc, $query2);
+
+
+        if($row = mysqli_fetch_row($result))
+        {
+            $user_id = $row[0];
+            var_dump($user_id);
+        }
       
-        $query1 = "INSERT INTO `orders`(`user_id`, `car_id`, `order_date`, `order_time`) 
+        $query3 = "INSERT INTO `orders`(`user_id`, `car_id`, `order_date`, `order_time`) 
                    VALUES ('$user_id', '$car_id', NOW(), NOW());";
         
-        $result = mysqli_query($dbc, $query1);
-        $order_id = mysqli_insert_id($dbc);
+        $result = mysqli_query($dataModel->dbc, $query3);
+  
+        $order_id = mysqli_insert_id($dataModel->dbc);
 
-        $query2 = "INSERT INTO `order_details`(`order_id`, `payment_type_id`, `pickup_location_id`, `pickup_date`, `pickup_time`, `dropoff_location_id`, `dropoff_date`, `dropoff_time`) 
+
+        $query4 = "INSERT INTO `order_details`(`order_id`, `payment_type_id`, `pickup_location_id`, `pickup_date`, `pickup_time`, `dropoff_location_id`, `dropoff_date`, `dropoff_time`) 
                    VALUES ('$order_id', '$payment_type_id', '$pickup_location_id', '$pickup_date', '$pickup_time', '$dropoff_location_id', '$dropoff_date', '$dropoff_time');";
         
-        $result = mysqli_query($this->dbc, $query2);
+        $result = mysqli_query($dataModel->dbc, $query4);
 
-        return $result;
+
+        if($result)
+        {
+            $json = $dataModel->order($order_id);
+        }
+        else
+        {
+            // error;
+        }
+
+        return $json;
     }
 }
 

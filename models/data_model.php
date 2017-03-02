@@ -29,16 +29,26 @@ class DataModel
         
         return $data;
     }
-    public function  allModels()
+
+    public function  allModels($form)
     {
         $query = "SELECT * FROM models;"; 
 
         $data = $this->getData($query, 'model_id');
 
-        $json = '"models" : ';
-        $json .= json_encode($data, JSON_PRETTY_PRINT);
+        if($form)
+        {
+            return $data;
+        }
+        else
+        {
+            $json = '"models" : ';
+            $json .= json_encode($data, JSON_PRETTY_PRINT);
 
-        return $json;
+            return $json;
+        }
+ 
+
     }
 
     public function  allCars()
@@ -54,6 +64,21 @@ class DataModel
         $json .= json_encode($data, JSON_PRETTY_PRINT);
 
         return $json;
+    }
+
+    public function order($order_id)
+    {
+        $query = "SELECT * FROM orders 
+                   INNER JOIN order_details ON orders.order_id = order_details.order_id
+                   WHERE orders.order_id = '$order_id';";
+
+
+        $data = $this->getData($query, 'order_id');
+
+        $json = '"order" : ';
+        $json .= json_encode($data, JSON_PRETTY_PRINT);
+
+        return $json;     
     }
 
     public function  carsById($availableCars)

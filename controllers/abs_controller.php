@@ -5,10 +5,12 @@ abstract class Abs
     protected $httpMethod;
     public $dataModel;
     protected $jsonView;
+    protected $userKey;
 
-    public function __construct($httpMethod)
+    public function __construct($httpMethod, $userKey)
     {
         $this->httpMethod = $httpMethod;
+        $this->userKey = $userKey;
 
         require_once('models/dbc_model.php');
         $dbc = DbConnection::getMysqli();
@@ -18,26 +20,37 @@ abstract class Abs
 
         require_once('models/user_model.php');
         $this->user = new User();
-
-        $user_ip = $_SERVER['REMOTE_ADDR'];
-        $boolKey = $this->user->validateKey($dbc);
-
-        if($boolKey)
+        
+        var_dump($userKey);
+        if($userKey != 'request_key')
         {
-         // connected  
+            $boolKey = $this->user->validateKey($dbc, $this->userKey);    
         }
         else
         {
-            $boolKey = $this->user->createKey($user_ip, $dbc);
-
-            if($boolKey)
+            if(!isset($_POST['keySubmit']))
             {
-                // connected
+                require_once('views/forms.php');
+                $form = new Form();
+                $view = $form->getKeyForm(); 
+
+                die($view);            
             }
             else
             {
-                // error
-            }
+                $user_ip = $_SERVER['REMOTE_ADDR'];
+                $boolKey = $this->user->createKey($user_ip, $dbc);
+
+                if($boolKey)
+                {
+                    //connected
+                }
+                else
+                {
+                    echo "error";
+                    // error
+                }
+            }    
         }
     }
 
@@ -54,7 +67,7 @@ abstract class Abs
             if($method != 'index' && $method != '__construct')
             {
                 $view .= "<tr>";
-                    $view .= "<td> <a href = '/projectantun/$class/$method'> vozila/$method </a> </td>";
+                    $view .= "<td> <a href = '/projectantun/$class/$method'> $class/$method </a> </td>";
                 $view .= "</tr>";
             }
         }

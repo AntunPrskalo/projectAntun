@@ -4,39 +4,60 @@ class RezervacijaController extends Abs
 {
     protected $order;
 
-    public function __construct($httpMethod)
+    public function __construct($httpMethod, $userKey)
     {
-        parent::__construct($httpMethod);
+        parent::__construct($httpMethod, $userKey);
         
         require_once('models/order_model.php');
         $this->order = new Order();
     }
 
-    public function vozilo($parameters)
+    public function vozila($arr)
     {
-        $condition = "models.model = '$model' AND";
+        $model_id = $arr['model_id'];
+        $pickup_location_id = $arr['pickup_location_id']; 
+        $pickup_date = $arr['pickup_date'];
+        $pickup_time = $arr['pickup_time'];
+        $dropoff_location_id = $arr['dropoff_location_id'];
+        $dropoff_date = $arr['dropoff_date']; 
+        $dropoff_time = $arr['dropoff_time'];
+        $first_name = $arr['first_name'];
+        $last_name = $arr['last_name'];
+        $email = $arr['email'];
+        $payment_type_id = $arr['payment_type_id'];
 
-        $availableCars = $order->availableCars($condition, $parameters);
+        $condition = "models.model_id = '$model_id' AND";
 
+        $availableCars = $this->order->availableCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time);
+        var_dump($availableCars);
         if(empty($availableCars))
         {
-            $availableCars = $order->availableReservedCars($condition, $parameters);    
+            $availableCars = $this->order->availableReservedCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time);
+            var_dump($availableCars);    
         }
 
         if(!empty($availableCars))
         {
-            $json = $order->book($availableCars, $parameters);
+            $json = $this->user->book($this->dataModel, $availableCars, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time, $first_name, $last_name, $email, $payment_type_id);
+        }
+        else
+        {
+            return "No avalible cars"; // no avalilbe cars;
         }
 
         return $json;
     }
 
-    public function slobodna_vozila($parameters)
+    public function slobodna_vozila($arr)
     {
+        $pickup_location_id = $arr['pickup_location_id'];
+        $pickup_date = $arr['pickup_date'];
+        $dropoff_location_id = $arr['dropoff_location_id'];
+        $dropoff_date = $arr['dropoff_date'];
         $condition = "";
 
-        $availableCars1 = $this->order->availableCars($this->dataModel->dbc, $parameters);
-        $availableCars2 = $this->order->availableReservedCars($this->dataModel->dbc, $parameters);
+        $availableCars1 = $this->order->availableCars($this->dataModel->dbc, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+        $availableCars2 = $this->order->availableReservedCars($this->dataModel->dbc, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
 
         $availableCars = array_merge($availableCars1, $availableCars2);
 
@@ -50,6 +71,17 @@ class RezervacijaController extends Abs
         }
 
         return $json;
+    }
+
+    public function form()
+    {
+        require_once('views/forms.php');
+        $form = new Form();
+        $data = $this->dataModel->allModels($form == true);
+
+        $formView = $form->generateSimpleReservationFrom($data);
+
+        return $formView;
     }
 }
 

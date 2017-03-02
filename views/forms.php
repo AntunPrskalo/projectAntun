@@ -2,9 +2,19 @@
 
 class Form
 {
+    public function getKeyForm()
+    {
+        $view = "<form id = 'reservationForm' action='' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
+
+        $view .= $this->personalInfoForm();
+
+        $view .= "<td> <input type = 'submit' name = 'keySubmit' value = 'ZATRAZI KLJUC'> </td> </tr>"; // submit button
+
+        return $view;
+
+    }
     public function generateReservationFrom($data,  $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time)
     {
-        
         $view = "<form id = 'reservationForm' action='' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
 
         $view .= "<tr> <th colspan = '3'>REZERVACIJA VOZILA</th> </tr>"; // naslov
@@ -50,6 +60,33 @@ class Form
         return $view; 
     }
 
+    public function generateSimpleReservationFrom($data)
+    {
+        $view = "<form action='/projectAntun/rezervacija/vozila' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
+
+        $view .= "<tr> <th colspan = '3'>REZERVACIJA VOZILA</th> </tr>"; // naslov
+
+        $view .= "<tr> <td><span>Odaberite vozilo:</span></td>"; // odabir vozila
+
+        $view .= "<td> <select name = model_id>";
+
+        foreach($data as $key=>$value)
+        {
+            $view .= "<option value = '" . $key . "'>" . $value['brand'] . " " .  $value['model'] . "</option>";
+        }
+        $view .= "</select> </td> </tr>";
+
+        $view .= $this->reservationInfoForm();
+        $view .= $this->paymentInfoForm();
+        $view .= $this->personalInfoForm();
+
+        $view .= "<tr> <td> <input type = 'submit' name = 'searchSubmit' value = 'REZERVIRAJ'> </td> </tr>"; // submit button
+
+        $view .= "</table></form>"; // zatvori form, table
+
+        return $view; 
+    }
+
     public function personalInfoForm()
     {
         $view = <<<HTML
@@ -60,34 +97,6 @@ class Form
                     <tr>
                         <td><span>Prezime:</span></td>
                         <td><input type="text" name = 'last_name' value = ""></td>
-                    </tr>
-                    <tr>
-                        <td><span>Korisnicko ime:</span></td>
-                        <td><input type="text" name = 'username' value = ""></td>
-                    </tr>
-                    <tr>
-                        <td><span>Zaporka:</span></td>
-                        <td><input type="password" name = 'password' value = ""></td>
-                    </tr>
-                    <tr>
-                        <td><span>Potvrdite zaporku:</span></td>
-                        <td><input type="password" name = 'confirm_password' value = ""></td>
-                    </tr>
-                    <tr>
-                        <td><span>Broj telefona ili mobitela:</span></td>
-                        <td><input type="text" name = 'phone' value = ""></td>
-                    </tr>
-                    <tr>
-                        <td><span>Grad stanovanja:</span></td>
-                        <td><input type="text" name = 'city' value = ""></td>
-                    </tr>
-                    <tr>
-                        <td><span>Drzava stanovanja:</span></td>
-                        <td><input type="text" name = 'country' value = ""></td>
-                    </tr>
-                    <tr>
-                        <td><span>Adresa stanovanja:</span></td>
-                        <td><input type="text" name = 'address' value = ""></td>
                     </tr>
                     <tr>
                         <td><span>Email adresa:</span></td>

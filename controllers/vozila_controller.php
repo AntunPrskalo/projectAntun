@@ -4,7 +4,7 @@ class VozilaController extends Abs
 {
     public function svi_modeli()
     {
-        $json = $this->dataModel->allModels();
+        $json = $this->dataModel->allModels($form = false);
         
         return $json;
     }
@@ -12,7 +12,7 @@ class VozilaController extends Abs
     public function sva_auta()
     {
         $json = $this->dataModel->allCars();
- 
+        
         return $json;
     }
 }
