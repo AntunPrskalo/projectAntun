@@ -3,14 +3,95 @@
 class FrontController
 {
     protected $httpMethod = 'GET';
-    protected $controller = 'vozila';
+    protected $controller = 'error';
     protected $method = 'index';
     protected $params = array();
 
     protected $request;
     protected $response;
+    protected $userKey = 'request_key';
 
-    public function __construct($request, $userKey) 
+    public function __construct() 
+    {
+        if(isset($_GET['key']) && strpos($_GET['key'], ',') == true)
+        {
+            $this->userKey = $_GET['key'];
+        }
+
+        if(isset($_GET['request']))
+        {
+            $request = $_GET['request'];
+            $this->request = $request; // request
+        }
+
+        if($this->request)
+        {
+            $request = trim($request, '/');
+            $request = filter_var($request, FILTER_SANITIZE_URL);
+            $request = explode('/', $request); 
+
+            $request = array_values($request);
+
+            if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
+            {
+                $this->controller = array_shift($request); // controller
+            }
+            else
+            {
+                unset($request[0]);
+            }
+        }
+
+            require_once('controllers/abs_controller.php');
+            require_once('controllers/' . $this->controller . '_controller.php');    
+            $class = $this->controller . "Controller";
+            $this->controller = new $class($this->userKey);
+
+        if($this->request)
+        {
+            if(array_key_exists(0, $request) && method_exists($this->controller, $request[0]))
+            {
+                $this->method = array_shift($request); // method
+            }
+            else
+            {
+                unset($request[0]);
+            }
+
+            if($request)
+            {
+                $this->params = $request; // parametri
+            }
+            else
+            {
+                $this->params = array();
+            }          
+        }
+
+        $this->methodHandler();
+    }
+
+    public function executeAPI()
+    {
+        if($this->httpMethod =='GET')
+        {
+            var_dump($this->controller);
+            var_dump($this->method);
+            var_dump($this->params);
+            $json = call_user_func_array([$this->controller, $this->method], $this->params);    
+        }
+        elseif($this->httpMethod == 'POST' || $this->httpMethod == 'PUT')
+        {
+            var_dump($this->controller);
+            var_dump($this->method);
+            var_dump($this->params);
+            $json = call_user_func([$this->controller, $this->method], $this->params); 
+        }
+
+        return $json;
+    }
+
+    public function methodHandler()
     {
         $this->httpMethod = $_SERVER['REQUEST_METHOD']; // HTTP method
 
@@ -30,87 +111,31 @@ class FrontController
             }
         }
 
-        $this->request = $request; // request
 
-        $request = trim($request, '/');
-        $request = filter_var($request, FILTER_SANITIZE_URL);
-        $request = explode('/', $request); 
-
-        $request = array_values($request);
-
-        if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
-        {
-            $this->controller = array_shift($request); // controller
-        }
-        else
-        {
-            unset($request[0]);
-        }
-
-        require_once('controllers/abs_controller.php');
-        require_once('controllers/' . $this->controller . '_controller.php');
-            
-        $class = $this->controller . "Controller";
-        $this->controller = new $class($this->httpMethod, $userKey);
-
-        if(array_key_exists(0, $request) && method_exists($this->controller, $request[0]))
-        {
-            $this->method = array_shift($request); // method
-        }
-        else
-        {
-            unset($request[0]);
-        }
-
-        if($request)
-        {
-            $this->params = $request; // parametri
-        }
-        else
-        {
-            $this->params = array();
-        }
-        $this->methodHandler();
-    }
-
-    public function executeAPI()
-    {
-        if($this->httpMethod =='GET')
-        {
-            var_dump($this->controller);
-            var_dump($this->method);
-            var_dump($this->params);
-            $json = call_user_func_array([$this->controller, $this->method], $this->params);    
-        }
-        elseif($this->httpMethod == 'POST')
-        {
-            $json = call_user_func([$this->controller, $this->method], $this->params); 
-        }
-
-        return $json;
-    }
-
-    public function methodHandler()
-    {
         if($this->httpMethod == 'PUT')
         {
-            if($this->controller == 'moje_rezervacije' && $this->method == 'uredi_rezervaciju')
+            if(get_class($this->controller) == 'Moje_rezervacijeController' && $this->method == 'uredi')
             {
-                // uredi put
+                parse_str(file_get_contents("php://input"),$put_arr);
+                $this->params = $put_arr;
             }
             else
             {
+                echo "error";
                 // http error
             }   
         }
         if($this->httpMethod == 'DELETE')
         {
-            if($this->controller != 'moje_rezervacije' && $this->method != 'otkazi_rezervaciju')
+            if($this->controller == 'moje_rezervacije' && $this->method != 'otkazi')
             {
-                // uredi delete
+                parse_str(file_get_contents("php://input"), $put_vars);
+                var_dump($this->controller);
+                var_dump($this->method);
             }
             else
             {
+                echo "error";
                 // http error
             }    
         }
@@ -118,8 +143,6 @@ class FrontController
         {     
             if(get_class($this->controller) == 'RezervacijaController' && ($this->method == 'vozila' || $this->method == 'slobodna_vozila'))
             {
-
-                var_dump($_POST);
                 $this->params = $_POST;
             }
             else

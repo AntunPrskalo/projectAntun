@@ -37,7 +37,7 @@ class DataModel
         $data = $this->getData($query, 'model_id');
 
         if($form)
-        {
+        {   
             return $data;
         }
         else
@@ -66,19 +66,16 @@ class DataModel
         return $json;
     }
 
-    public function order($order_id)
+    public function order($cond)
     {
         $query = "SELECT * FROM orders 
                    INNER JOIN order_details ON orders.order_id = order_details.order_id
-                   WHERE orders.order_id = '$order_id';";
+                   WHERE $cond;";
 
 
         $data = $this->getData($query, 'order_id');
 
-        $json = '"order" : ';
-        $json .= json_encode($data, JSON_PRETTY_PRINT);
-
-        return $json;     
+        return $data;     
     }
 
     public function  carsById($availableCars)
@@ -107,6 +104,21 @@ class DataModel
         $json .= json_encode($data, JSON_PRETTY_PRINT);
 
         return $json;
+    }
+
+    public function formData()
+    {
+        $data = array();
+
+        $query = "SELECT * FROM models;"; 
+        $modelsData = $this->getData($query, 'model_id');
+        $data['models'] = $modelsData; 
+
+        $query = "SELECT * FROM locations;"; 
+        $locationsData = $this->getData($query, 'location_id');
+        $data['locations'] = $locationsData; 
+
+        return $data;   
     }    
 }
 

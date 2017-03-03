@@ -7,4 +7,9 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
 RewriteRule ^(.+)/key/(.+)$ index.php?request=$1&key=$2 [QSA,NC,L]
-RewriteRule ^key/(.+)$ index.php?key=$2 [QSA,NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^key/(.+)$ index.php?key=$1 [QSA,NC,L]
+

@@ -7,7 +7,7 @@ class User
     protected $user_id;
 
 
-    public function createKey($user_ip, $dbc)
+    public function createKey($user_ip, $first_name, $last_name, $email, $dbc)
     {
         $user_key = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
 
@@ -16,11 +16,13 @@ class User
 
         if(mysqli_num_rows($result) == 1)
         {
-            $query = "UPDATE `users` SET `user_key`= '$user_key' WHERE `user_ip` = '$user_ip';";
+            $query = "UPDATE `users` SET `user_key`= '$user_key', `first_name`= '$first_name', `last_name`= '$last_name', `email`= '$email' WHERE `user_ip` = '$user_ip';";
             $result = mysqli_query($dbc, $query);
+            var_dump($result);
 
             if($result)
             {
+                echo "in";
                 $key = md5($user_ip . $user_key);
                 setcookie('login', $user_ip . "," . $key, time() + 3600, "/");
 
@@ -33,7 +35,7 @@ class User
         }
         else
         {
-            $query = "INSERT INTO `users`(`user_ip`, `user_key`) VALUES ('$user_ip', '$user_key')";
+            $query = "INSERT INTO `users`(`user_ip`, `first_name`, `last_name`, `email`, `user_key`) VALUES ('$user_ip', '$user_key')";
             $result = mysqli_query($dbc, $query);
 
             if($result)
@@ -49,11 +51,11 @@ class User
         }    
     }
 
-    public function validateKey($dbc, $UserKey)
+    public function validateKey($dbc, $userKey)
     {
-        list($user_ip, $hash) = explode(',', $UserKey);
+        list($user_ip, $hash) = explode(',', $userKey);
 
-        $query = "SELECT user_key FROM users WHERE user_ip = '$user_ip';";
+        $query = "SELECT user_id, user_key FROM users WHERE user_ip = '$user_ip';";
         $result = mysqli_query($dbc, $query);
 
         if(mysqli_num_rows($result) == 1)
@@ -65,8 +67,7 @@ class User
 
             if($key == $hash)
             {
-                echo "key validated true";
-                return true;
+                return $row['user_id'];
             }
             else
             {
@@ -117,7 +118,11 @@ class User
 
         if($result)
         {
-            $json = $dataModel->order($order_id);
+            $cond = "orders.order_id = '$order_id'";
+            $data = $dataModel->order($cond);
+            
+            $json = '"order" : ';
+            $json .= json_encode($data, JSON_PRETTY_PRINT);
         }
         else
         {

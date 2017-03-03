@@ -2,14 +2,12 @@
 
 abstract class Abs
 {
-    protected $httpMethod;
     public $dataModel;
-    protected $jsonView;
     protected $userKey;
+    protected $user_id;
 
-    public function __construct($httpMethod, $userKey)
+    public function __construct($userKey)
     {
-        $this->httpMethod = $httpMethod;
         $this->userKey = $userKey;
 
         require_once('models/dbc_model.php');
@@ -21,10 +19,10 @@ abstract class Abs
         require_once('models/user_model.php');
         $this->user = new User();
         
-        var_dump($userKey);
         if($userKey != 'request_key')
         {
-            $boolKey = $this->user->validateKey($dbc, $this->userKey);    
+            $user_id = $this->user->validateKey($dbc, $this->userKey);
+            $this->user_id = $user_id;   
         }
         else
         {
@@ -39,10 +37,15 @@ abstract class Abs
             else
             {
                 $user_ip = $_SERVER['REMOTE_ADDR'];
-                $boolKey = $this->user->createKey($user_ip, $dbc);
+                $first_name = $_POST['first_name'];
+                $last_name = $_POST['last_name'];
+                $email = $_POST['email'];
+
+                $boolKey = $this->user->createKey($user_ip, $first_name, $last_name, $email, $dbc);
 
                 if($boolKey)
                 {
+                    echo "in";
                     //connected
                 }
                 else

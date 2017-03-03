@@ -28,11 +28,11 @@ class RezervacijaController extends Abs
 
         $condition = "models.model_id = '$model_id' AND";
 
-        $availableCars = $this->order->availableCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time);
+        $availableCars = $this->order->availableCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
         var_dump($availableCars);
         if(empty($availableCars))
         {
-            $availableCars = $this->order->availableReservedCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time);
+            $availableCars = $this->order->availableReservedCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
             var_dump($availableCars);    
         }
 
@@ -48,16 +48,12 @@ class RezervacijaController extends Abs
         return $json;
     }
 
-    public function slobodna_vozila($arr)
+    public function slobodna_vozila($pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
-        $pickup_location_id = $arr['pickup_location_id'];
-        $pickup_date = $arr['pickup_date'];
-        $dropoff_location_id = $arr['dropoff_location_id'];
-        $dropoff_date = $arr['dropoff_date'];
         $condition = "";
 
-        $availableCars1 = $this->order->availableCars($this->dataModel->dbc, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
-        $availableCars2 = $this->order->availableReservedCars($this->dataModel->dbc, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+        $availableCars1 = $this->order->availableCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+        $availableCars2 = $this->order->availableReservedCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
 
         $availableCars = array_merge($availableCars1, $availableCars2);
 
@@ -77,7 +73,7 @@ class RezervacijaController extends Abs
     {
         require_once('views/forms.php');
         $form = new Form();
-        $data = $this->dataModel->allModels($form == true);
+        $data = $this->dataModel->formData();
 
         $formView = $form->generateSimpleReservationFrom($data);
 
