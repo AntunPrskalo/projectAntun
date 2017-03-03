@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 01, 2017 at 12:20 PM
+-- Generation Time: Mar 03, 2017 at 11:57 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -160,11 +160,53 @@ INSERT INTO `models` (`model_id`, `brand`, `model`, `transmission`, `air_conditi
 
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `car_id` int(11) NOT NULL,
   `order_date` date NOT NULL,
-  `order_time` time NOT NULL
+  `order_time` time NOT NULL,
+  `last_change_id` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `user_id`, `car_id`, `order_date`, `order_time`, `last_change_id`) VALUES
+(76, 23, 1, '2017-03-01', '23:56:47', 4),
+(75, 23, 3, '2017-03-01', '23:56:45', 5),
+(74, 23, 2, '2017-03-01', '23:56:37', 0),
+(73, 23, 2, '2017-03-01', '23:56:29', 0),
+(72, 23, 3, '2017-03-01', '23:56:23', 0),
+(71, 23, 2, '2017-03-01', '23:56:02', 0),
+(70, 23, 1, '2017-03-01', '23:55:53', 0),
+(69, 23, 3, '2017-03-01', '23:55:00', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_change`
+--
+
+CREATE TABLE `order_change` (
+  `order_change_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `change_type` varchar(255) NOT NULL DEFAULT '''''',
+  `change_column` varchar(255) NOT NULL DEFAULT '''''',
+  `previous_value` varchar(255) NOT NULL DEFAULT '''''',
+  `new_value` varchar(255) NOT NULL DEFAULT '''''',
+  `change_date` date NOT NULL,
+  `change_time` time NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `order_change`
+--
+
+INSERT INTO `order_change` (`order_change_id`, `order_id`, `change_type`, `change_column`, `previous_value`, `new_value`, `change_date`, `change_time`) VALUES
+(5, 75, 'update', 'dropoff_date', '2017-09-17', '2017-09-20', '2017-03-04', '00:55:41'),
+(2, 76, 'update', 'dropoff_date', '2017-09-17', '2017-09-19', '2017-03-04', '00:45:11'),
+(3, 76, 'update', 'dropoff_date', '2017-09-17', '2017-09-19', '2017-03-04', '00:46:11'),
+(4, 76, 'update', 'dropoff_date', '2017-09-17', '2017-09-19', '2017-03-04', '00:53:11');
 
 -- --------------------------------------------------------
 
@@ -182,6 +224,20 @@ CREATE TABLE `order_details` (
   `dropoff_date` date NOT NULL,
   `dropoff_time` time NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `order_details`
+--
+
+INSERT INTO `order_details` (`order_id`, `payment_type_id`, `pickup_location_id`, `pickup_date`, `pickup_time`, `dropoff_location_id`, `dropoff_date`, `dropoff_time`) VALUES
+(76, 1, 1, '2017-09-17', '09:00:00', 1, '2017-09-19', '22:00:00'),
+(75, 1, 1, '2017-09-17', '09:00:00', 1, '2017-09-20', '22:00:00'),
+(74, 1, 1, '2017-09-17', '09:00:00', 1, '2017-09-17', '22:00:00'),
+(73, 1, 1, '2017-09-12', '09:00:00', 1, '2017-09-12', '22:00:00'),
+(72, 1, 1, '2017-09-12', '09:00:00', 1, '2017-09-12', '22:00:00'),
+(71, 1, 1, '2016-09-12', '09:00:00', 1, '2016-09-12', '22:00:00'),
+(70, 1, 1, '2016-09-12', '09:00:00', 1, '2016-09-12', '22:00:00'),
+(69, 1, 1, '2016-09-12', '09:00:00', 1, '2016-09-12', '22:00:00');
 
 -- --------------------------------------------------------
 
@@ -223,7 +279,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `phone`, `email`, `user_ip`, `user_key`) VALUES
-(23, '\'\'', '\'\'', '\'\'', '\'\'', '::1', 'bffdec73cc6131d74e19987ecf2bf7777019079de384b9414f70b4cf62d53871');
+(23, 'Antun', 'Prskalo', '\'\'', 'antun8-8@hotmail.com', '::1', '138606c0797c7f8e5692839c69264bb2a3ea479c96b9a85d9c65a5b1daf92252');
 
 --
 -- Indexes for dumped tables
@@ -264,6 +320,12 @@ ALTER TABLE `models`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`);
+
+--
+-- Indexes for table `order_change`
+--
+ALTER TABLE `order_change`
+  ADD PRIMARY KEY (`order_change_id`);
 
 --
 -- Indexes for table `order_details`
@@ -316,7 +378,12 @@ ALTER TABLE `models`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+--
+-- AUTO_INCREMENT for table `order_change`
+--
+ALTER TABLE `order_change`
+  MODIFY `order_change_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `payment_type`
 --
