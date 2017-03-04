@@ -5,6 +5,7 @@ abstract class Abs
     public $dataModel;
     protected $userKey;
     protected $user_id;
+    protected $json_encode;
 
     public function __construct($userKey)
     {
@@ -18,6 +19,12 @@ abstract class Abs
 
         require_once('models/user_model.php');
         $this->user = new User();
+
+        require_once('models/json_encode_model.php');
+        $this->json_encode = new Json();
+
+        require_once('models/error_model.php');
+        $this->error = new Error();
         
         if($userKey != 'request_key')
         {

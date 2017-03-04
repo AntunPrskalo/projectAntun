@@ -3,7 +3,7 @@
 class User
 {   
     protected $username_email;
-
+    protected $userKey;
     protected $user_id;
 
 
@@ -67,6 +67,7 @@ class User
 
             if($key == $hash)
             {
+                $this->userKey = $userKey;
                 return $row['user_id'];
             }
             else
@@ -85,34 +86,54 @@ class User
         var_dump($availableCars);
         echo "Odabrano auto $car_id";
         
-        list($user_ip, $hash) = explode(',', $_COOKIE['login']);
+        list($user_ip, $hash) = explode(',', $this->userKey);
 
-        $query1 = "UPDATE `users` SET `first_name`='$first_name',`last_name`='$last_name', `email`='$email' WHERE user_ip = $user_ip;";
-
+        $query1 = "UPDATE `users` SET `first_name`='$first_name',`last_name`='$last_name', `email`='$email' WHERE user_ip = '$user_ip';";
         $result = mysqli_query($dataModel->dbc, $query1);
+
+        if(!$result)
+        {
+            echo "in0";
+            $data = '500';
+            return $data; 
+        }
         
         $query2 = "SELECT `user_id` FROM `users` WHERE user_ip = '$user_ip';";
-
         $result = mysqli_query($dataModel->dbc, $query2);
 
+        if(!$result)
+        {
+            echo "in1";
+            $data = '500';
+            return $data; 
+        }
 
         if($row = mysqli_fetch_row($result))
         {
             $user_id = $row[0];
             var_dump($user_id);
         }
+        else
+        {
+            echo "in2";
+            $data = '500';
+            return $data;     
+        }
       
         $query3 = "INSERT INTO `orders`(`user_id`, `car_id`, `order_date`, `order_time`) 
                    VALUES ('$user_id', '$car_id', NOW(), NOW());";
-        
         $result = mysqli_query($dataModel->dbc, $query3);
-  
         $order_id = mysqli_insert_id($dataModel->dbc);
 
+        if(!$result)
+        {
+            echo "in3";
+            $data = '500';
+            return $data; 
+        }
 
         $query4 = "INSERT INTO `order_details`(`order_id`, `payment_type_id`, `pickup_location_id`, `pickup_date`, `pickup_time`, `dropoff_location_id`, `dropoff_date`, `dropoff_time`) 
                    VALUES ('$order_id', '$payment_type_id', '$pickup_location_id', '$pickup_date', '$pickup_time', '$dropoff_location_id', '$dropoff_date', '$dropoff_time');";
-        
         $result = mysqli_query($dataModel->dbc, $query4);
 
 
@@ -120,16 +141,15 @@ class User
         {
             $cond = "orders.order_id = '$order_id'";
             $data = $dataModel->order($cond);
-            
-            $json = '"order" : ';
-            $json .= json_encode($data, JSON_PRETTY_PRINT);
         }
         else
         {
-            // error;
+            echo "in4";
+            $data = '500';
+            return $data; 
         }
 
-        return $json;
+        return $data;
     }
 }
 

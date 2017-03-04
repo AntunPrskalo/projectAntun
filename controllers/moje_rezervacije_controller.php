@@ -31,9 +31,13 @@ class Moje_rezervacijeController extends Abs
         return $json;
     }   
 
-    public function obrisi($order_id)
+    public function otkazi($delete_arr)
     {
+        // permissins
+        $order_id = $delete_arr['order_id'];
+        $json = $this->order->delete($this->dataModel, $order_id);
 
+        return $json;
     } 
 }
 

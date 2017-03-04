@@ -4,9 +4,9 @@ class RezervacijaController extends Abs
 {
     protected $order;
 
-    public function __construct($httpMethod, $userKey)
+    public function __construct($userKey)
     {
-        parent::__construct($httpMethod, $userKey);
+        parent::__construct($userKey);
         
         require_once('models/order_model.php');
         $this->order = new Order();
@@ -30,19 +30,47 @@ class RezervacijaController extends Abs
 
         $availableCars = $this->order->availableCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
         var_dump($availableCars);
+
+        if($availableCars == '500')
+        {
+            $data = $this->error->responseError('500', 'Internal Server Error.');
+            $json = $this->json_encode->toJson('error', $data); 
+
+            return $json;   
+        }
+
         if(empty($availableCars))
         {
             $availableCars = $this->order->availableReservedCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
-            var_dump($availableCars);    
+            var_dump($availableCars);
+
+            if($availableCars == '500')
+            {
+            $data = $this->error->responseError('500', 'Internal Server Error.');
+            $json = $this->json_encode->toJson('error', $data); 
+
+            return $json;   
+            }    
         }
 
         if(!empty($availableCars))
         {
-            $json = $this->user->book($this->dataModel, $availableCars, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time, $first_name, $last_name, $email, $payment_type_id);
+            $data = $this->user->book($this->dataModel, $availableCars, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time, $first_name, $last_name, $email, $payment_type_id);
+
+            if($data == '500')
+            {
+                $data = $this->error->responseError('500', 'Internal Server Error.');
+                $json = $this->json_encode->toJson('error', $data);     
+            }
+            else
+            {
+                $json = $this->json_encode->toJson('order', $data);     
+            }
         }
         else
         {
-            return "No avalible cars"; // no avalilbe cars;
+            $data = $this->error->responseError('204', 'Nema slobodnih vozila koji odgovaraju zadanim kriterijima.');
+            $json = $this->json_encode->toJson('error', $data);
         }
 
         return $json;
@@ -50,10 +78,20 @@ class RezervacijaController extends Abs
 
     public function slobodna_vozila($pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
+        // check parameters 
+
         $condition = "";
 
         $availableCars1 = $this->order->availableCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
         $availableCars2 = $this->order->availableReservedCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
+
+        if($availableCars1 == '500' || $availableCars2 == '500')
+        {
+            $data = $this->error->responseError('500', 'Internal Server Error.');
+            $json = $this->json_encode->toJson('error', $data); 
+
+            return $json;   
+        }
 
         $availableCars = array_merge($availableCars1, $availableCars2);
 
@@ -63,7 +101,8 @@ class RezervacijaController extends Abs
         }
         else
         {
-            // no avalible cars message
+            $data = $this->error->responseError('204', 'Nema slobodnih vozila koji odgovaraju zadanim kriterijima.');
+            $json = $this->json_encode->toJson('error', $data);
         }
 
         return $json;
@@ -74,10 +113,18 @@ class RezervacijaController extends Abs
         require_once('views/forms.php');
         $form = new Form();
         $data = $this->dataModel->formData();
+        $formData= $form->generateSimpleReservationFrom($data);
 
-        $formView = $form->generateSimpleReservationFrom($data);
-
-        return $formView;
+        if($formData)
+        {
+            $json = $this->json_encode->toJson('reservation_form', $formData);    
+        }
+        else
+        {
+            echo "in3";
+            echo "error";
+        }
+        return $json;
     }
 }
 

@@ -10,6 +10,7 @@ class FrontController
     protected $request;
     protected $response;
     protected $userKey = 'request_key';
+    public $x;
 
     public function __construct() 
     {
@@ -31,7 +32,7 @@ class FrontController
             $request = explode('/', $request); 
 
             $request = array_values($request);
-
+            $this->x = $request;
             if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
             {
                 $this->controller = array_shift($request); // controller
@@ -41,7 +42,6 @@ class FrontController
                 unset($request[0]);
             }
         }
-
             require_once('controllers/abs_controller.php');
             require_once('controllers/' . $this->controller . '_controller.php');    
             $class = $this->controller . "Controller";
@@ -75,16 +75,10 @@ class FrontController
     {
         if($this->httpMethod =='GET')
         {
-            var_dump($this->controller);
-            var_dump($this->method);
-            var_dump($this->params);
             $json = call_user_func_array([$this->controller, $this->method], $this->params);    
         }
-        elseif($this->httpMethod == 'POST' || $this->httpMethod == 'PUT')
+        elseif($this->httpMethod == 'POST' || $this->httpMethod == 'PUT' || $this->httpMethod == 'DELETE')
         {
-            var_dump($this->controller);
-            var_dump($this->method);
-            var_dump($this->params);
             $json = call_user_func([$this->controller, $this->method], $this->params); 
         }
 
@@ -121,26 +115,27 @@ class FrontController
             }
             else
             {
+                echo "in1";
                 echo "error";
                 // http error
             }   
         }
         if($this->httpMethod == 'DELETE')
         {
-            if($this->controller == 'moje_rezervacije' && $this->method != 'otkazi')
+            if(get_class($this->controller) == 'Moje_rezervacijeController' && $this->method == 'otkazi')
             {
-                parse_str(file_get_contents("php://input"), $put_vars);
-                var_dump($this->controller);
-                var_dump($this->method);
+                parse_str(file_get_contents("php://input"), $delete_vars);
+                $this->params = $delete_vars;
             }
             else
             {
+                echo "in2";
                 echo "error";
                 // http error
             }    
         }
         if($this->httpMethod == 'POST')
-        {     
+        {   
             if(get_class($this->controller) == 'RezervacijaController' && ($this->method == 'vozila' || $this->method == 'slobodna_vozila'))
             {
                 $this->params = $_POST;

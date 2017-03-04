@@ -23,6 +23,10 @@ class Order
                 $availableCars[] = $row['car_id'];
             }
         }
+        else
+        {
+            return '500';
+        }
 
         return $availableCars;
     }
@@ -157,6 +161,30 @@ class Order
             {
                 // invalid input error
             }
+        }
+    }
+
+    public function delete($dataModel, $order_id)
+    {
+        $query1 = "DELETE FROM `orders` WHERE order_id = $order_id";
+        $result1 = mysqli_query($dataModel->dbc, $query1);
+
+        $query2 = "DELETE FROM `order_details` WHERE order_id = $order_id";
+        $result2 = mysqli_query($dataModel->dbc, $query2);
+
+        $query3 = "INSERT INTO `order_change`(`order_id`, `change_type`, `change_date`, `change_time`) 
+                   VALUES ($order_id, 'delete', NOW(), NOW());";
+        $result3 = mysqli_query($dataModel->dbc, $query3);
+
+        if($result1 && $result2 && $result3)
+        {
+            var_dump('success');
+            // success json
+        }
+        else
+        {
+            var_dump('error');
+            // error controller
         }
     }
 }

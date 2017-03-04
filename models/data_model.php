@@ -30,25 +30,13 @@ class DataModel
         return $data;
     }
 
-    public function  allModels($form)
+    public function  allModels()
     {
         $query = "SELECT * FROM models;"; 
 
         $data = $this->getData($query, 'model_id');
 
-        if($form)
-        {   
-            return $data;
-        }
-        else
-        {
-            $json = '"models" : ';
-            $json .= json_encode($data, JSON_PRETTY_PRINT);
-
-            return $json;
-        }
- 
-
+        return $data;
     }
 
     public function  allCars()
@@ -60,10 +48,7 @@ class DataModel
 
         $data = $this->getData($query, 'car_id');
 
-        $json = '"cars" : ';
-        $json .= json_encode($data, JSON_PRETTY_PRINT);
-
-        return $json;
+        return $data;
     }
 
     public function order($cond)

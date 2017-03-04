@@ -150,10 +150,7 @@ class Form
             $arr['form_submit']['value'] = 'REZERVIRAJ';
 
         
-        $json = '"reservation form" : ';
-        $json .= json_encode($arr, JSON_PRETTY_PRINT);
-
-        return $json;
+        return $arr;
     }
 
     public function jsAutoUpdate($prices, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time)
