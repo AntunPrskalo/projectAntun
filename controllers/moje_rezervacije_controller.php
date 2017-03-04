@@ -17,6 +17,10 @@ class Moje_rezervacijeController extends Abs
         $cond = "orders.user_id = '$user_id'";
         $data = $this->dataModel->order($cond); 
 
+        if($data)
+        {
+            
+        }
         $json = $this->json_encode->toJson('moje rezervacije', $data);    
 
         return $json;    

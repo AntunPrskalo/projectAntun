@@ -22,7 +22,6 @@ class User
 
             if($result)
             {
-                echo "in";
                 $key = md5($user_ip . $user_key);
                 setcookie('login', $user_ip . "," . $key, time() + 3600, "/");
 
@@ -75,6 +74,13 @@ class User
                 return false;
             } 
         }
+        else
+        {
+            $data = Error::staticResponseError('500', 'Internal Server Error.');
+            $json = Json::toJsonStatic('error', $data); 
+
+            die($json);    
+        }
     }
 
     public function book($dataModel, $availableCars, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time, $first_name, $last_name, $email, $payment_type_id)
@@ -93,7 +99,6 @@ class User
 
         if(!$result)
         {
-            echo "in0";
             $data = '500';
             return $data; 
         }
@@ -103,7 +108,6 @@ class User
 
         if(!$result)
         {
-            echo "in1";
             $data = '500';
             return $data; 
         }
@@ -115,7 +119,6 @@ class User
         }
         else
         {
-            echo "in2";
             $data = '500';
             return $data;     
         }
@@ -127,7 +130,6 @@ class User
 
         if(!$result)
         {
-            echo "in3";
             $data = '500';
             return $data; 
         }
@@ -144,7 +146,6 @@ class User
         }
         else
         {
-            echo "in4";
             $data = '500';
             return $data; 
         }

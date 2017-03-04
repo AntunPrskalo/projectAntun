@@ -26,6 +26,13 @@ class DataModel
                 $data[$row[$id]] = $arr;
             }
         }
+        else
+        {
+            $data = Error::staticResponseError('500', 'Internal Server Error.');
+            $json = Json::toJsonStatic('error', $data); 
+
+            die($json);       
+        }
         
         return $data;
     }
@@ -84,11 +91,12 @@ class DataModel
                 $data[$row[0]] = array('brand' => $row[1], 'model' => $row[2], 'price' => $row[3]);    
             }
         }
+        else
+        {
+            $data = '500';
+        }
 
-        $json = '"availible cars" : ';
-        $json .= json_encode($data, JSON_PRETTY_PRINT);
-
-        return $json;
+        return $data;
     }
 
     public function formData()
@@ -103,6 +111,10 @@ class DataModel
         $locationsData = $this->getData($query, 'location_id');
         $data['locations'] = $locationsData; 
 
+        if(!$data)
+        {
+            $data = '500';
+        }
         return $data;   
     }    
 }

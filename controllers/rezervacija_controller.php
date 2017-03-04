@@ -12,8 +12,54 @@ class RezervacijaController extends Abs
         $this->order = new Order();
     }
 
+    public function checkParams($arr, $arr_require)
+    {
+        foreach($arr as $key=>$value)
+        {
+            $arrEsc = array();
+            $result = in_array($key, $arr_require);
+            
+            if($result)
+            {
+                $arrEsc[$key] = mysqli_real_escape_string($value);
+            }
+            else
+            {
+                $data = $this->error->responseError('400', 'Bad Request.');
+                $json = $this->json_encode->toJson('error', $data); 
+
+                die($json);     
+            }
+
+            if($value == "")
+            {
+                $data = $this->error->responseError('422', 'Nedostaju podaci.');
+                $json = $this->json_encode->toJson('error', $data); 
+
+                die($json);      
+            }
+            
+            switch($key)
+            {
+                case "INT":
+                    $bool = is_int($value)
+                    break;
+                case "DATE":
+                    $bool = 
+            }
+        }
+
+
+
+        return $arrEsc;
+    }
+
     public function vozila($arr)
     {
+        $arr_require("INT" => 'model_id',"INT" => 'pickup_location_id',"DATE" => 'pickup_date',"TIME" => 'pickup_time',"INT" => 'dropoff_location_id',
+                     "DATE" => 'dropoff_date',"TIME" => 'dropoff_time', "VARCHAR" => 'first_name', "VARCHAR" =>'email', "INT" => 'payment_type_id');
+        $arr = $this->checkParams($arr, $arr_require);
+
         $model_id = $arr['model_id'];
         $pickup_location_id = $arr['pickup_location_id']; 
         $pickup_date = $arr['pickup_date'];
@@ -78,7 +124,8 @@ class RezervacijaController extends Abs
 
     public function slobodna_vozila($pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
-        // check parameters 
+        $arr_require('pickup_location_id', 'pickup_date', 'dropoff_location_id', 'dropoff_date');
+        $arr = $this->checkParams($arr, $arr_require);
 
         $condition = "";
 
@@ -90,7 +137,7 @@ class RezervacijaController extends Abs
             $data = $this->error->responseError('500', 'Internal Server Error.');
             $json = $this->json_encode->toJson('error', $data); 
 
-            return $json;   
+            die($json);   
         }
 
         $availableCars = array_merge($availableCars1, $availableCars2);
@@ -113,17 +160,26 @@ class RezervacijaController extends Abs
         require_once('views/forms.php');
         $form = new Form();
         $data = $this->dataModel->formData();
+        if($data == '500')
+        {
+            $data = $this->error->responseError('500', 'Internal Server Error.');
+            $json = $this->json_encode->toJson('error', $data); 
+
+            die($json);  
+        }
+
         $formData= $form->generateSimpleReservationFrom($data);
 
-        if($formData)
+        if($formData == '500')
         {
-            $json = $this->json_encode->toJson('reservation_form', $formData);    
+            $data = $this->error->responseError('500', 'Internal Server Error.');
+            $json = $this->json_encode->toJson('error', $data);  
         }
         else
         {
-            echo "in3";
-            echo "error";
+            $json = $this->json_encode->toJson('reservation_form', $formData);   
         }
+
         return $json;
     }
 }

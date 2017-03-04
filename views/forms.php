@@ -15,6 +15,7 @@ class Form
         return $view;
 
     }
+    // izbacit
     public function generateReservationFrom($data,  $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time)
     {
         $view = "<form id = 'reservationForm' action='' method = 'POST'> <table table cellpadding = '3'>"; // otvori form, table
@@ -153,6 +154,7 @@ class Form
         return $arr;
     }
 
+    // izbacit
     public function jsAutoUpdate($prices, $pickup_location_id, $pickup_date, $pickup_time, $dropoff_location_id, $dropoff_date, $dropoff_time)
     {
         $pickup_location_index = $pickup_location_id - 1;

@@ -52,13 +52,11 @@ abstract class Abs
 
                 if($boolKey)
                 {
-                    echo "in";
-                    //connected
+                    die('Kljuc kreiran');
                 }
                 else
                 {
-                    echo "error";
-                    // error
+                    die('Greska u kreiranju kljuca');
                 }
             }    
         }

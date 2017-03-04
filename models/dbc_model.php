@@ -11,10 +11,15 @@ class DbConnection
         
         $dbc= mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 
-        if(mysqli_connect_errno()) {
-            echo "Connection to the database failed " . mysqli_connect_errno() . " => " . mysqli_connect_error() . "<br>";
+        if(mysqli_connect_errno()) 
+        {
+            $data = Error::staticResponseError('500', 'Internal Server Error.');
+            $json = Json::toJsonStatic('error', $data); 
+
+            die($json);  
         }
-        else {
+        else 
+        {
             return $dbc;    
         }
     } 
