@@ -10,7 +10,6 @@ class FrontController
     protected $request;
     protected $response;
     protected $userKey = 'request_key';
-    public $x;
 
     public function __construct() 
     {
@@ -30,9 +29,8 @@ class FrontController
             $request = trim($request, '/');
             $request = filter_var($request, FILTER_SANITIZE_URL);
             $request = explode('/', $request); 
-
             $request = array_values($request);
-            $this->x = $request;
+
             if(array_key_exists(0, $request) && file_exists('controllers/' . $request[0] . '_controller.php'))
             {
                 $this->controller = array_shift($request); // controller
@@ -115,8 +113,6 @@ class FrontController
             }
             else
             {
-                echo "in1";
-                echo "error";
                 // http error
             }   
         }
@@ -129,8 +125,6 @@ class FrontController
             }
             else
             {
-                echo "in2";
-                echo "error";
                 // http error
             }    
         }

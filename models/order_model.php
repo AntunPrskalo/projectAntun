@@ -86,82 +86,69 @@ class Order
 
     public function update($dataModel, $order_id, $put_arr)
     {
-        foreach($put_arr as $key=>$value)
+        // permit id changes
+        $cond = "orders.order_id = '$order_id'";
+        $data = $dataModel->order($cond);
+        $data = $data[$order_id];
+
+        if($data)
         {
-            // permit id changes
-            $cond = "orders.order_id = '$order_id'";
-            $data = $dataModel->order($cond);
-            
-            $data = $data[$order_id];
-            if($data)
+            foreach($put_arr as $key=>$value)
             {
                 $change = array();
-                $keys = array();
-                foreach($data as $key=>$value)
+
+                foreach($data as $key1=>$value1)
                 {
-                    foreach($put_arr as $key1=>$value1)
+                    if($key1 == $key)
                     {
-                        if($key1 == $key)
-                        {
-                            $data[$key] = $value1;
-                            $change[$key] = array('previous_value' => $value, 'new_value' => $value1);
-                        }
+                        $data[$key] = $value;
+                        $change = array('previous_value' => $value1, 'new_value' => $value);
                     }
                 }
-                var_dump($data);
+
                 $condition = "orders.order_id != '$order_id' AND";
 
                 $availableCars1 = $this->availableCars($dataModel->dbc, $condition, $data['pickup_location_id'], $data['pickup_date'], $data['dropoff_location_id'], $data['dropoff_date']);
                 $availableCars2 = $this->availableReservedCars($dataModel->dbc, $condition, $data['pickup_location_id'], $data['pickup_date'], $data['dropoff_location_id'], $data['dropoff_date']);
                 $availableCars = array_merge($availableCars1, $availableCars2);    
 
-                var_dump($availableCars);
-
                 if(in_array($data['car_id'], $availableCars))
                 {
-                    foreach($change as $key => $value)
+                    $previous_value = $change['previous_value'];
+                    $new_value = $change['new_value'];
+
+                    $query1 = "INSERT INTO `order_change`(`order_id`, `change_type`, `change_column`, `previous_value`, `new_value`, `change_date`, `change_time`) 
+                                VALUES ('$order_id', 'update', '$key', '$previous_value', '$new_value', NOW(), NOW())";
+                    $result1 = mysqli_query($dataModel->dbc, $query1);
+                    $last_change_id = mysqli_insert_id($dataModel->dbc);
+
+                    $query2 = "UPDATE `orders` SET `last_change_id`= $last_change_id WHERE order_id = $order_id;";
+                    $result2 = mysqli_query($dataModel->dbc, $query2);
+
+                    $query3 = "UPDATE `order_details` SET `$key`= '$new_value' WHERE order_id = $order_id;";
+                    $result3 = mysqli_query($dataModel->dbc, $query3);
+
+
+                    if(!$result1 || !$result2 || !$result3)
                     {
-                        $previous_value = $value['previous_value'];
-                        $new_value = $value['new_value'];
-
-                        $query1 = "INSERT INTO `order_change`(`order_id`, `change_type`, `change_column`, `previous_value`, `new_value`, `change_date`, `change_time`) 
-                                   VALUES ('$order_id', 'update', '$key', '$previous_value', '$new_value', NOW(), NOW())";
-                        $result = mysqli_query($dataModel->dbc, $query1);
-                        var_dump($result);
-                        $last_change_id = mysqli_insert_id($dataModel->dbc);
-                        var_dump($last_change_id);
-
-                        $query2 = "UPDATE `orders` SET `last_change_id`= $last_change_id WHERE order_id = $order_id;";
-                        $result = mysqli_query($dataModel->dbc, $query2);
-                        var_dump($result);
-
-                        $query3 = "UPDATE `order_details` SET `$key`= '$new_value' WHERE order_id = $order_id;";
-                        $result = mysqli_query($dataModel->dbc, $query3);
-                        var_dump($result);
-
-                        if($result)
-                        {
-                            // success
-                        }
-                        else
-                        {
-                            // connection error
-                        }                        
-                    }
-
-
+                        $date = '500';
+                        return $data;
+                    }                       
+                    
                 }
                 else
                 {
-                    // error change not available
+                    $data = '204';
+                    return $data;
                 }
-
-            }
-            else
-            {
-                // invalid input error
             }
         }
+        else
+        {
+            $data = '404';
+        }
+
+        return $data;
     }
 
     public function delete($dataModel, $order_id)
@@ -178,14 +165,14 @@ class Order
 
         if($result1 && $result2 && $result3)
         {
-            var_dump('success');
-            // success json
+            $data = array('status' => '200', 'message' => 'Otkazivanje rezervacije uspjesno', 'order_id' => $order_id);
         }
         else
         {
-            var_dump('error');
-            // error controller
+            $data = '500';
         }
+
+        return $data;
     }
 }
 

@@ -46,10 +46,10 @@ class RezervacijaController extends Abs
 
             if($availableCars == '500')
             {
-            $data = $this->error->responseError('500', 'Internal Server Error.');
-            $json = $this->json_encode->toJson('error', $data); 
+                $data = $this->error->responseError('500', 'Internal Server Error.');
+                $json = $this->json_encode->toJson('error', $data); 
 
-            return $json;   
+                return $json;   
             }    
         }
 

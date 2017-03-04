@@ -132,7 +132,7 @@ function reservationForm($key)
 function testPut($key)
 {
     
-    $put = array("order_id" => 72,  "pickup_date" => "2017-09-15");
+    $put = array("order_id" => 85,  "dropoff_date" => "2012-01-01");
 
     $ch = curl_init();
 
@@ -151,13 +151,14 @@ function testPut($key)
 
     curl_close($ch);
 
-    return $output;    
+    $data = json_decode($output);
+    return $data;    
 }
 
 
 function testDelete($key)
 {
-    $delete = array("order_id" => 72);
+    $delete = array("order_id" => 86);
 
     $ch = curl_init();
 
@@ -168,7 +169,7 @@ function testDelete($key)
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($delete));
 
     $output = curl_exec($ch);
-
+    var_dump($output);
     if($output == FALSE)
     {
         echo "curl error " . curl_error($ch);
@@ -212,6 +213,6 @@ function reservation($key)
 }
 
 var_dump($key);
-echo reservation($key);
+echo testDelete($key);
 
 ?>
