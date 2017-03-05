@@ -19,9 +19,8 @@ class Moje_rezervacijeController extends Abs
 
         if($data)
         {
-            
-        }
-        $json = $this->json_encode->toJson('moje rezervacije', $data);    
+            $json = $this->json_encode->toJson('moje rezervacije', $data);    
+        } 
 
         return $json;    
     }

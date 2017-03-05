@@ -107,6 +107,15 @@ class Order
                 }
 
                 $condition = "orders.order_id != '$order_id' AND";
+                
+                $result = Abs::staticManageDateTime($data['pickup_date'], $data['pickup_time'],$data['dropoff_date'], $data['dropoff_time']);
+                if($result == false)
+                {
+                    $error = array('status' => '204', 'message' => 'Zadana vremena preuzimanja i povrata vozila nisu u skladu sa zahtijevima.');
+                    $json = Json::toJsonStatic('error', $error); 
+
+                    die($json);   
+                }
 
                 $availableCars1 = $this->availableCars($dataModel->dbc, $condition, $data['pickup_location_id'], $data['pickup_date'], $data['dropoff_location_id'], $data['dropoff_date']);
                 $availableCars2 = $this->availableReservedCars($dataModel->dbc, $condition, $data['pickup_location_id'], $data['pickup_date'], $data['dropoff_location_id'], $data['dropoff_date']);

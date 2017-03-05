@@ -26,16 +26,14 @@ function all_cars($key)
 
 function availibleCars($key)
 {
-    $response = file_get_contents('http://localhost/projectAntun/rezervacija/slobodna_vozila/3/2017-04-04/3/2016-04-04/key/' . $key);
+    $response = file_get_contents('http://localhost/projectAntun/rezervacija/slobodna_vozila/3/2017-04-04/3/2017-04-05/key/' . $key);
 
     return $response;     
 }
 
 function moje_rezervacije_dohvati($key)
 {
-    var_dump("in");
     $response = file_get_contents('http://localhost/projectAntun/moje_rezervacije/dohvati/key/' . $key);
-    echo $response;
 
     return $response;     
 }
@@ -139,7 +137,7 @@ function reservationForm($key)
 
 function testPut($key)
 {
-    $put = array("order_id" => 79,  "pickup_date" => "2015-02-02");
+    $put = array("order_id" => 76,  "dropoff_date" => "2017-10-20");
 
     $ch = curl_init();
 

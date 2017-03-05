@@ -19,9 +19,10 @@ class DataModel
 
             if(mysqli_num_rows($result) == 0)
             {
-                echo "in";
-                $data = 404;
-                return $data;  
+                $data = Error::staticResponseError('404', 'Not Found.');
+                $json = Json::toJsonStatic('error', $data);
+
+                die($json); 
             }
 
             while($row = mysqli_fetch_assoc($result))

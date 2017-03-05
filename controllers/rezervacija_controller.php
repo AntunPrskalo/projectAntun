@@ -37,7 +37,7 @@ class RezervacijaController extends Abs
         {
             $data = $this->error->responseError('204', 'Zadana vremena preuzimanja i povrata vozila nisu u skladu sa zahtijevima.');
             $json = $this->json_encode->toJson('error', $data);
-            echo "in";
+
             die($json);   
         }
 
@@ -90,8 +90,18 @@ class RezervacijaController extends Abs
     public function slobodna_vozila($pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
 
-        // $arr_require = array('pickup_location_id' => 'INT' ,'pickup_date' => 'DATE', 'dropoff_location_id' => 'INT', 'dropoff_date' => 'DATE')
-        //$arr = $this->checkParams($arr, $arr_require);
+        $arr_require = array('pickup_location_id' => 'INT' ,'pickup_date' => 'DATE', 'dropoff_location_id' => 'INT', 'dropoff_date' => 'DATE');
+        $arr = array("pickup_location_id" => $pickup_location_id, "pickup_date" => $pickup_date, "dropoff_location_id" => $dropoff_location_id, "dropoff_date" => $dropoff_date);
+        $arr = $this->checkParams($arr, $arr_require, 'GET');
+
+        $result = $this->manageDateTime($pickup_date, "09:00", $dropoff_date, "22:00");
+        if($result == false)
+        {
+            $data = $this->error->responseError('204', 'Zadana vremena preuzimanja i povrata vozila nisu u skladu sa zahtijevima.');
+            $json = $this->json_encode->toJson('error', $data);
+
+            die($json);   
+        }
 
         $condition = "";
 

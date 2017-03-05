@@ -102,7 +102,7 @@ abstract class Abs
         {
             $data = $this->error->responseError('422', 'Nedostaju podaci.');
             $json = $this->json_encode->toJson('error', $data); 
-            var_dump("in");
+
             die($json);     
         }
         else
@@ -150,7 +150,7 @@ abstract class Abs
                                     {
                                         $data = $this->error->responseError('400', 'Bad Request.');
                                         $json = $this->json_encode->toJson('error', $data); 
-                                        echo "in";
+
                                         die($json); 
                                     }
                                 }
@@ -186,7 +186,7 @@ abstract class Abs
                             {
                                 $data = $this->error->responseError('400', 'Bad Request.');
                                 $json = $this->json_encode->toJson('error', $data); 
- 
+
                                 die($json);   
                             }
                         }
@@ -215,8 +215,24 @@ abstract class Abs
         $pickup_timestamp = strtotime($pickup_date . " " . $pickup_time);
         $dropoff_timestamp = strtotime($dropoff_date . " " . $dropoff_time);
 
-        var_dump($pickup_timestamp);
-        var_dump($dropoff_timestamp);
+        $cond1 = ( time() <= ($pickup_timestamp - (24 * 60 * 60)) )? true : false; 
+        $cond2 = ( (2 * 60 * 60) < ($dropoff_timestamp - $pickup_timestamp) )? true : false;
+        $cond3 = ( ($dropoff_timestamp - $pickup_timestamp) < (7 * 24 * 60 * 60) )? true : false;
+
+        if($cond1 && $cond2 && $cond3)
+        {
+            return true;
+        }
+        elseif(($cond1 || $cond2 || $cond3) == false)
+        {
+            return false;
+        }
+    }
+
+    public static function staticManageDateTime($pickup_date, $pickup_time, $dropoff_date, $dropoff_time)
+    {
+        $pickup_timestamp = strtotime($pickup_date . " " . $pickup_time);
+        $dropoff_timestamp = strtotime($dropoff_date . " " . $dropoff_time);
 
         $cond1 = ( time() <= ($pickup_timestamp - (24 * 60 * 60)) )? true : false; 
         $cond2 = ( (2 * 60 * 60) < ($dropoff_timestamp - $pickup_timestamp) )? true : false;
