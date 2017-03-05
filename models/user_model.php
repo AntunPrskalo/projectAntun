@@ -18,7 +18,6 @@ class User
         {
             $query = "UPDATE `users` SET `user_key`= '$user_key', `first_name`= '$first_name', `last_name`= '$last_name', `email`= '$email' WHERE `user_ip` = '$user_ip';";
             $result = mysqli_query($dbc, $query);
-            var_dump($result);
 
             if($result)
             {
@@ -87,10 +86,6 @@ class User
     {
         $i = array_rand($availableCars);
         $car_id = $availableCars[$i];
-
-        echo "Dostupna auta";
-        var_dump($availableCars);
-        echo "Odabrano auto $car_id";
         
         list($user_ip, $hash) = explode(',', $this->userKey);
 
@@ -115,7 +110,6 @@ class User
         if($row = mysqli_fetch_row($result))
         {
             $user_id = $row[0];
-            var_dump($user_id);
         }
         else
         {

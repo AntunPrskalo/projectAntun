@@ -28,8 +28,22 @@ class Moje_rezervacijeController extends Abs
 
     public function uredi($put_arr)
     {
-        $order_id = $put_arr['order_id'];
-        unset($put_arr['order_id']);
+        if(isset($put_arr['order_id']))
+        {
+            $order_id = $put_arr['order_id'];
+            unset($put_arr['order_id']);            
+        }
+        else
+        {
+            $data = $this->error->responseError('204', 'Navedena promjena rezervacije nije moguca.');
+            $json = $this->json_encode->toJson('error', $data);  
+
+            die($json);
+        }
+
+        $arr_require = array('model_id' => 'INT','pickup_location_id' => 'INT' ,'pickup_date' => 'DATE', 'pickup_time' => 'TIME','dropoff_location_id' => 'INT',
+                             'dropoff_date' => 'DATE','dropoff_time' => 'TIME' , 'first_name' => 'VARCHAR', 'last_name' => 'VARCHAR', 'email' => 'VARCHAR', 'payment_type_id' => 'INT');
+        $put_arr = $this->checkParams($put_arr, $arr_require, 'PUT');
 
         $data = $this->order->update($this->dataModel, $order_id, $put_arr);
 

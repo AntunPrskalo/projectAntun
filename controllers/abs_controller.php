@@ -83,7 +83,157 @@ abstract class Abs
         $view .= "</table>";
 
         return $view;     
-    }    
+    }
+
+    protected function checkParams($arr, $arr_require, $method)
+    {
+        if($method == 'POST')
+        {
+            $submit = 1;
+        }
+        else
+        {
+            $submit= 0;
+        }
+        // empty fields
+        $result = in_array("", $arr);
+
+        if($result)
+        {
+            $data = $this->error->responseError('422', 'Nedostaju podaci.');
+            $json = $this->json_encode->toJson('error', $data); 
+            var_dump("in");
+            die($json);     
+        }
+        else
+        {
+            $arrEsc = array();
+
+            foreach($arr as $key=>$value)
+            {
+                // valid key
+
+                foreach($arr_require as $key1 => $value1)
+                {
+                    
+                    if($key1 == $key)
+                    {
+                        // valid values int
+                        if($value1 == 'INT')
+                        {
+                            $num = intval($value);
+                            $result = is_int($num);
+
+                            if($result == false)
+                            {
+                                $data = $this->error->responseError('400', 'Bad Request.');
+                                $json = $this->json_encode->toJson('error', $data); 
+
+                                die($json);      
+                            }    
+                        }
+
+                        // valid values date
+                        if($value1 == 'DATE')
+                        {
+                            $char = strpos($value, "-");
+
+                            if($char)
+                            {
+                                $dateArr = explode("-", $value);
+
+                                if(count($dateArr) == 3)
+                                {
+                                    var_dump($dateArr);
+                                    $result = checkdate($dateArr[1], $dateArr[2], $dateArr[0]);
+                                    var_dump($result);
+                                    if($result == false)
+                                    {
+                                        $data = $this->error->responseError('400', 'Bad Request.');
+                                        $json = $this->json_encode->toJson('error', $data); 
+                                        echo "in";
+                                        die($json); 
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                $data = $this->error->responseError('400', 'Bad Request.');
+                                $json = $this->json_encode->toJson('error', $data); 
+
+                                die($json); 
+                            }
+                        }
+
+                        // valid values time
+                        if($value1 == 'TIME')
+                        {
+                            $char = strpos($value, ":");
+
+                            if($char)
+                            {
+                                $timeArr = explode(":", $value);
+
+                                if(count($timeArr) != 2 && !(0 <= $timeArr[0] && $timeArr[0] < 24 && 0 <= $timeArr[1] && $timeArr[1] < 60))
+                                {
+                                    $data = $this->error->responseError('400', 'Bad Request.');
+                                    $json = $this->json_encode->toJson('error', $data); 
+    
+                                    die($json);    
+                                }
+  
+                            }
+                            else
+                            {
+                                $data = $this->error->responseError('400', 'Bad Request.');
+                                $json = $this->json_encode->toJson('error', $data); 
+ 
+                                die($json);   
+                            }
+                        }
+
+                        $arrEsc["$key"] = mysqli_real_escape_string($this->dataModel->dbc, $value);
+                    }
+                }
+            }   
+        }
+
+        if(count($arr) != (count($arrEsc) + $submit))
+        {
+            $data = $this->error->responseError('400', 'Bad Request.');
+            $json = $this->json_encode->toJson('error', $data); 
+
+            die($json);    
+        }
+        else
+        {   
+            return $arrEsc; 
+        }
+    }
+
+    protected function manageDateTime($pickup_date, $pickup_time, $dropoff_date, $dropoff_time)
+    {
+        $pickup_timestamp = strtotime($pickup_date . " " . $pickup_time);
+        $dropoff_timestamp = strtotime($dropoff_date . " " . $dropoff_time);
+
+        var_dump($pickup_timestamp);
+        var_dump($dropoff_timestamp);
+
+        $cond1 = ( time() <= ($pickup_timestamp - (24 * 60 * 60)) )? true : false; 
+        $cond2 = ( (2 * 60 * 60) < ($dropoff_timestamp - $pickup_timestamp) )? true : false;
+        $cond3 = ( ($dropoff_timestamp - $pickup_timestamp) < (7 * 24 * 60 * 60) )? true : false;
+
+        if($cond1 && $cond2 && $cond3)
+        {
+            return true;
+        }
+        elseif(($cond1 || $cond2 || $cond3) == false)
+        {
+            return false;
+        }
+    }
+
+
 }
 
 ?>

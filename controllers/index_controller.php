@@ -1,6 +1,6 @@
 <?php
 
-class ErrorController extends Abs
+class IndexController extends Abs
 {
     public function index()
     {

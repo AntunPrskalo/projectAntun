@@ -36,7 +36,6 @@ class Form
             {
                 $view .= "<option value = '" . $key . "'>" . $value['brand'] . " " .  $value['model'] . "</option>";
                 $prices[$key] = $value['price'];
-                var_dump($prices);
             }
 
             $view .= "</select> </td>";

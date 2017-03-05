@@ -12,53 +12,11 @@ class RezervacijaController extends Abs
         $this->order = new Order();
     }
 
-    public function checkParams($arr, $arr_require)
-    {
-        foreach($arr as $key=>$value)
-        {
-            $arrEsc = array();
-            $result = in_array($key, $arr_require);
-            
-            if($result)
-            {
-                $arrEsc[$key] = mysqli_real_escape_string($value);
-            }
-            else
-            {
-                $data = $this->error->responseError('400', 'Bad Request.');
-                $json = $this->json_encode->toJson('error', $data); 
-
-                die($json);     
-            }
-
-            if($value == "")
-            {
-                $data = $this->error->responseError('422', 'Nedostaju podaci.');
-                $json = $this->json_encode->toJson('error', $data); 
-
-                die($json);      
-            }
-            
-            switch($key)
-            {
-                case "INT":
-                    $bool = is_int($value)
-                    break;
-                case "DATE":
-                    $bool = 
-            }
-        }
-
-
-
-        return $arrEsc;
-    }
-
     public function vozila($arr)
     {
-        $arr_require("INT" => 'model_id',"INT" => 'pickup_location_id',"DATE" => 'pickup_date',"TIME" => 'pickup_time',"INT" => 'dropoff_location_id',
-                     "DATE" => 'dropoff_date',"TIME" => 'dropoff_time', "VARCHAR" => 'first_name', "VARCHAR" =>'email', "INT" => 'payment_type_id');
-        $arr = $this->checkParams($arr, $arr_require);
+        $arr_require = array('model_id' => 'INT','pickup_location_id' => 'INT' ,'pickup_date' => 'DATE', 'pickup_time' => 'TIME','dropoff_location_id' => 'INT',
+                             'dropoff_date' => 'DATE','dropoff_time' => 'TIME' , 'first_name' => 'VARCHAR', 'last_name' => 'VARCHAR', 'email' => 'VARCHAR', 'payment_type_id' => 'INT');
+        $arr = $this->checkParams($arr, $arr_require, 'POST');
 
         $model_id = $arr['model_id'];
         $pickup_location_id = $arr['pickup_location_id']; 
@@ -74,8 +32,16 @@ class RezervacijaController extends Abs
 
         $condition = "models.model_id = '$model_id' AND";
 
+        $result = $this->manageDateTime($pickup_date, $pickup_time, $dropoff_date, $dropoff_time);
+        if($result == false)
+        {
+            $data = $this->error->responseError('204', 'Zadana vremena preuzimanja i povrata vozila nisu u skladu sa zahtijevima.');
+            $json = $this->json_encode->toJson('error', $data);
+            echo "in";
+            die($json);   
+        }
+
         $availableCars = $this->order->availableCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
-        var_dump($availableCars);
 
         if($availableCars == '500')
         {
@@ -88,7 +54,6 @@ class RezervacijaController extends Abs
         if(empty($availableCars))
         {
             $availableCars = $this->order->availableReservedCars($this->dataModel->dbc, $condition, $pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date);
-            var_dump($availableCars);
 
             if($availableCars == '500')
             {
@@ -124,8 +89,8 @@ class RezervacijaController extends Abs
 
     public function slobodna_vozila($pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
-        $arr_require('pickup_location_id', 'pickup_date', 'dropoff_location_id', 'dropoff_date');
-        $arr = $this->checkParams($arr, $arr_require);
+        // $arr_require = array('pickup_location_id' => 'INT' ,'pickup_date' => 'DATE', 'dropoff_location_id' => 'INT', 'dropoff_date' => 'DATE')
+        //$arr = $this->checkParams($arr, $arr_require);
 
         $condition = "";
 

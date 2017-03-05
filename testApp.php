@@ -36,7 +36,7 @@ function reservationForm($key)
 {
     $response = file_get_contents('http://localhost/projectAntun/rezervacija/form/key/' . $key);
 
-    $ob = json_decode($response);
+    $ob = json_decode($response);  
     $ob = $ob->reservation_form;
 
     $view = "<form action = '' method = '". $ob->form_method . "'>";
@@ -131,8 +131,7 @@ function reservationForm($key)
 
 function testPut($key)
 {
-    
-    $put = array("order_id" => 85,  "dropoff_date" => "2012-01-01");
+    $put = array("order_id" => 79,  "pickup_date" => "2012-02-01");
 
     $ch = curl_init();
 
@@ -150,7 +149,7 @@ function testPut($key)
     }
 
     curl_close($ch);
-
+    echo $output;
     $data = json_decode($output);
     return $data;    
 }
@@ -169,7 +168,7 @@ function testDelete($key)
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($delete));
 
     $output = curl_exec($ch);
-    var_dump($output);
+
     if($output == FALSE)
     {
         echo "curl error " . curl_error($ch);
@@ -213,6 +212,6 @@ function reservation($key)
 }
 
 var_dump($key);
-echo testDelete($key);
+echo reservation($key);
 
 ?>

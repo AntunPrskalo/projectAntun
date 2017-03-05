@@ -17,6 +17,13 @@ class DataModel
         {
             $data = [];
 
+            if(mysqli_num_rows($result) == 0)
+            {
+                echo "in";
+                $data = 404;
+                return $data;  
+            }
+
             while($row = mysqli_fetch_assoc($result))
             {
                 foreach($row as $key=>$value)
