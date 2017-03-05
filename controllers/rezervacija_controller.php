@@ -89,6 +89,7 @@ class RezervacijaController extends Abs
 
     public function slobodna_vozila($pickup_location_id, $pickup_date, $dropoff_location_id, $dropoff_date)
     {
+
         // $arr_require = array('pickup_location_id' => 'INT' ,'pickup_date' => 'DATE', 'dropoff_location_id' => 'INT', 'dropoff_date' => 'DATE')
         //$arr = $this->checkParams($arr, $arr_require);
 
@@ -104,12 +105,13 @@ class RezervacijaController extends Abs
 
             die($json);   
         }
-
+ 
         $availableCars = array_merge($availableCars1, $availableCars2);
 
         if(!empty($availableCars))
         {
-            $json = $this->dataModel->carsById($availableCars);
+            $data = $this->dataModel->carsById($availableCars);
+            $json = $this->json_encode->toJson('availible cars', $data); 
         }
         else
         {

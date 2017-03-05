@@ -132,7 +132,6 @@ class FrontController
             {
                 parse_str(file_get_contents("php://input"),$put_arr);
                 $this->params = $put_arr;
-                 var_dump("in");
             }
             else
             {

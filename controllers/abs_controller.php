@@ -144,9 +144,8 @@ abstract class Abs
 
                                 if(count($dateArr) == 3)
                                 {
-                                    var_dump($dateArr);
                                     $result = checkdate($dateArr[1], $dateArr[2], $dateArr[0]);
-                                    var_dump($result);
+
                                     if($result == false)
                                     {
                                         $data = $this->error->responseError('400', 'Bad Request.');

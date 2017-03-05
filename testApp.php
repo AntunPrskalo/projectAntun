@@ -24,10 +24,18 @@ function all_cars($key)
     return $response;    
 }
 
-function availibleCarsGET($key)
+function availibleCars($key)
 {
-    $response = file_get_contents('http://localhost/projectAntun/rezervacija/slobodna_vozila/2/2016-01-01/2/2016-01-01/key/' . $key);
+    $response = file_get_contents('http://localhost/projectAntun/rezervacija/slobodna_vozila/3/2017-04-04/3/2016-04-04/key/' . $key);
 
+    return $response;     
+}
+
+function moje_rezervacije_dohvati($key)
+{
+    var_dump("in");
+    $response = file_get_contents('http://localhost/projectAntun/moje_rezervacije/dohvati/key/' . $key);
+    echo $response;
 
     return $response;     
 }
@@ -131,7 +139,7 @@ function reservationForm($key)
 
 function testPut($key)
 {
-    $put = array("order_id" => 79,  "pickup_date" => "2012-02-01");
+    $put = array("order_id" => 79,  "pickup_date" => "2015-02-02");
 
     $ch = curl_init();
 
@@ -149,15 +157,14 @@ function testPut($key)
     }
 
     curl_close($ch);
-    echo $output;
-    $data = json_decode($output);
-    return $data;    
+
+    return $output;    
 }
 
 
 function testDelete($key)
 {
-    $delete = array("order_id" => 86);
+    $delete = array("order_id" => 88);
 
     $ch = curl_init();
 
@@ -212,6 +219,61 @@ function reservation($key)
 }
 
 var_dump($key);
-echo reservation($key);
+
+if(isset($_POST['svi_modeli']))
+{
+    echo all_models($key);
+}
+echo "<form action '' method = 'POST'>";
+    echo "<input type='submit' name = 'svi_modeli' value = 'GET: SVI MODELI'>";
+echo "</form>";
+
+if(isset($_POST['sva_vozila']))
+{
+    echo all_cars($key);
+}
+echo "<form action '' method = 'POST'>";
+    echo "<input type='submit' name = 'sva_vozila' value = 'GET: SVA VOZILA'>";
+echo "</form>";
+
+if(isset($_POST['rezervacija_forma']))
+{
+    echo reservation($key);
+}
+echo "<form action '' method = 'POST'>";
+    echo "<input type='submit' name = 'rezervacija_forma' value = 'GET: REZERVACIJSKA FORMA (JSON_DECODE)-> POST: REZERVACIJA VOZILA (cURL)'>";
+echo "</form>";
+
+if(isset($_POST['slobodna_vozila']))
+{
+    echo availibleCars($key);
+}
+echo "<form action '' method = 'POST'>";
+    echo "<input type='submit' name = 'slobodna_vozila' value = 'GET: SLOBODNA VOZILA'>";
+echo "</form>";
+
+if(isset($_POST['moje_rezervacije_dohvati']))
+{
+    echo moje_rezervacije_dohvati($key);
+}
+echo "<form action '' method = 'POST'>";
+    echo "<input type='submit' name = 'moje_rezervacije_dohvati' value = 'GET: DOHVATI MOJE REZERVACIJE'>";
+echo "</form>";
+
+if(isset($_POST['moje_rezervacije_uredi']))
+{
+    echo testPut($key);
+}
+echo "<form action '' method = 'POST'>";
+    echo "<input type='submit' name = 'moje_rezervacije_uredi' value = 'PUT: UREDI MOJU REZERVACIJU (cURL)'>";
+echo "</form>";
+
+if(isset($_POST['moje_rezervacije_otkazi']))
+{
+    echo testDelete($key);
+}
+echo "<form action '' method = 'POST'>";
+    echo "<input type='submit' name = 'moje_rezervacije_otkazi' value = 'DELETE: OTKAZI REZERVACIJU (cURL)'>";
+echo "</form>";
 
 ?>
